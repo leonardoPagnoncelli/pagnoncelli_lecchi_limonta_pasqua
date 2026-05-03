@@ -1,3 +1,31 @@
+'''
+Giorno 1 — 
+Correggere EVT-I, EVT-J, EVT-K (3 funzioni da riscrivere completamente); 
+correggere MORALE-2 (range venti favorevoli e verifica tutti i delta); 
+correggere ALBATRO-1 (controllo armi prima di proporre la scelta) 
+
+Giorno 2 — 
+Correggere ALBATRO-2/3 (logica tentativi, carne guadagnata, rimozione armi usate); 
+correggere SCIALUPPA-2/3 (ruolo casuale, morale casuale, bonus cassa merci); 
+separare EVT-B/C/D/E in 4 funzioni distinte con frazioni corrette; 
+attendere STATO-7 da P1 e integrare moltiplicatore in consuma_scorte_dettagliate() 
+
+Giorno 3 — 
+Riscrivere EPIDEMIA-1/2/3 (logica 70%, bottiglie per malato, report dettagliato); 
+riscrivere PIRATA-1/2/3/4 (formula corretta, rimozione opzioni non previste); 
+correggere TIMONE-1/2 (solo meccanico); 
+correggere VENTO-1/2 (solo navigatore, rimuovere danno nave); 
+riscrivere ISOLA-1/2/3/4 (logica completa con approdo, 50%/50%, bonus merci e albatro); 
+consegnare a P3 le variabili di stato aggiornate (merci dopo eventi, settimane, flag albatro)
+
+Giorno 4 — 
+Implementare step2_controllo_scorte() completo con STEP2-1/2/3/4 e integrarlo nel loop _ciclo_viaggio(); 
+implementare calcola_ammutinamento() da zero con i 7 criteri corretti e 
+integrarla in _ciclo_viaggio() sostituendo il vecchio contatore cumulativo; 
+test completo del loop di viaggio end-to-end 
+
+'''
+
 #Limonta
 import Stati_Ingaggio
 import nuovo_mondo
@@ -47,7 +75,7 @@ def equipaggio_basso_morale(stato, soglia=30):
         return False
     
     bassi = 0
-    
+
     for m in morali:
         if m <= soglia:
             bassi = bassi + 1
