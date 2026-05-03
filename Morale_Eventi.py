@@ -30,7 +30,6 @@ test completo del loop di viaggio end-to-end
 import Stati_Ingaggio
 import nuovo_mondo
 import random
-from termcolor import colored, cprint
 
 
 def varia_morale_tutti(stato, delta, motivo=""):
@@ -212,15 +211,54 @@ def evento_cattivo_tempo(stato): #I
     nuovo_mondo.stampa_lenta(f"⛈️  Cattivo tempo: bottiglie di medicinale danneggiate (-{perdita})", "yellow")
 
 
-
 def evento_ondata(stato): #J
     perdita = perdita_frazione(stato["merci"]["armi"])
     stato["merci"]["armi"] = max(0, stato["merci"]["armi"] - perdita)
     nuovo_mondo.stampa_lenta(f"🌊 Ondata gigantesca: armi danneggiate dall'acqua (-{perdita})", "yellow")
 
 
-
 def evento_infestazione_ratti(stato): #K
     perdita = perdita_frazione(stato["merci"]["stoffa"])
     stato["merci"]["stoffa"] = max(0, stato["merci"]["stoffa"] - perdita)
     nuovo_mondo.stampa_lenta(f"🐭 Infestazione di ratti: stoffa danneggiata (-{perdita})", "yellow")
+
+
+def evento_albatro(stato): #ALBATRO-1
+    if stato["merci"]["armi"] <= 0:
+        nuovo_mondo.stampa_lenta("🐦 Un albatro maestoso vola vicino... ma senza armi, non puoi fare nulla.", "cyan")
+        stato["avvistamenti_albatro"] += 1
+        return
+
+    vivi = Stati_Ingaggio.conta_equipaggio(stato)
+    
+    # ALBATRO-2 
+    max_tiri = min(stato["merci"]["armi"], vivi)
+    
+    nuovo_mondo.stampa_lenta(f"🐦 Un albatro gigantesco appare! {max_tiri} membri dell'equipaggio prendono le armi!", "cyan")
+    
+    armi_usate = 0
+    abbattuto = False
+
+    for tentativo in range(1, max_tiri + 1):
+        armi_usate += 1
+        if random.random() < 0.5:
+            abbattuto = True
+            nuovo_mondo.stampa_lenta(f"  🎯 Tentativo {tentativo}: COLPITO!", "green")
+            break
+        else:
+            nuovo_mondo.stampa_lenta(f"  ❌ Tentativo {tentativo}: mancato", "yellow")
+
+    stato["merci"]["armi"] -= armi_usate
+
+    if abbattuto:
+        # ALBATRO-3 
+        carne_aggiunta = random.randint(10, 15)
+        stato["merci"]["carne"] += carne_aggiunta
+        stato["albatro_ucciso"] = True
+        stato["avvistamenti_albatro"] += 1
+        nuovo_mondo.stampa_lenta(
+            f"☠️  Albatro abbattuto! +{carne_aggiunta} kg di carne fresca","red",attrs=["bold"])
+        varia_morale_tutti(stato, +10, "albatro abbattuto (caccia di successo)")
+    else:
+        stato["avvistamenti_albatro"] += 1
+        nuovo_mondo.stampa_lenta("🐦 L'albatro scappa dopo il fuoco. Cattivo presagio...", "cyan")
