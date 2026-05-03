@@ -1,0 +1,185 @@
+import random
+import sys
+import time
+import json
+import os
+from termcolor import colored, cprint
+
+try:
+    import msvcrt
+    is_windows = True
+except ImportError:
+    import select
+    is_windows = False
+
+
+# ==========================================
+# GESTIONE DATI E SALVATAGGI
+# ==========================================
+
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+FILE_SALVATAGGIO = os.path.join(BASE_DIR, "galeone_save.json")
+
+def pulisci_schermo():
+    os.system('cls' if os.name == 'nt' else 'clear')
+
+def carica_dati():
+    dati_base = {
+        "stats": {
+            "morti": 0,
+            "vittorie_epiche": 0,
+            "vittorie_pirro": 0,
+            "rovine": 0
+        },
+        "salvataggi": {}
+    }
+    if os.path.exists(FILE_SALVATAGGIO):
+        try:
+            with open(FILE_SALVATAGGIO, "r", encoding="utf-8") as f:
+                dati_letti = json.load(f)
+                if "stats" in dati_letti:
+                    dati_base["stats"].update(dati_letti["stats"])
+                if "salvataggi" in dati_letti:
+                    dati_base["salvataggi"].update(dati_letti["salvataggi"])
+        except json.JSONDecodeError:
+            cprint("\n⚠️  ATTENZIONE: Il file di salvataggio è corrotto!", "red", attrs=["bold"])
+        except Exception as e:
+            cprint(f"\n⚠️  Errore imprevisto nel caricamento: {e}", "red")
+    return dati_base
+
+def salva_dati(dati):
+    try:
+        with open(FILE_SALVATAGGIO, "w", encoding="utf-8") as f:
+            json.dump(dati, f, indent=4, ensure_ascii=False)
+    except Exception as e:
+        cprint(f"❌ Errore durante il salvataggio: {e}", "red")
+
+def archivia_partita(capitano, stato, esito):
+    print()
+    nome = input(colored("👉 Inserisci un nome per registrare questa partita (Invio per casuale): ", "cyan")).strip()
+    if not nome:
+        nome = f"Cronaca_di_{capitano}_{random.randint(1000,9999)}"
+    dati = carica_dati()
+    stato["esito"] = esito
+    dati["salvataggi"][nome] = {"capitano": capitano, "stato": stato}
+    salva_dati(dati)
+    cprint(f"✅ Partita '{nome}' registrata negli archivi.", "green")
+
+def mostra_statistiche_globali(dati):
+    pulisci_schermo()
+    cprint("\n" + "="*60, "cyan", attrs=["bold"])
+    cprint(" 📊 --- REGISTRO DEL CAPITANO (STATISTICHE GLOBALI) --- 📊 ", "yellow", attrs=["bold"])
+    cprint("="*60, "cyan", attrs=["bold"])
+    stats = dati["stats"]
+    print(f"💀 Morti in mare:        {colored(stats['morti'], 'red', attrs=['bold'])}")
+    print(f"👑 Vittorie Epiche:      {colored(stats['vittorie_epiche'], 'yellow', attrs=['bold'])}")
+    print(f"⚖️  Vittorie di Pirro:   {colored(stats['vittorie_pirro'], 'cyan', attrs=['bold'])}")
+    print(f"⛓️  Rovina Totale:       {colored(stats['rovine'], 'dark_grey', attrs=['bold'])}")
+    input(colored("\n📖 [Premi Invio per tornare al Menù] ", "dark_grey"))
+
+# ==========================================
+# FUNZIONI DI INPUT E STAMPA
+# ==========================================
+
+def leggi_input(prompt_testo):
+    sys.stdout.write(prompt_testo)
+    sys.stdout.flush()
+    risposta = ""
+    while True:
+        if is_windows:
+            c = msvcrt.getch()
+            if c == b'\x1b':
+                print()
+                raise InterruptedError("ESC")
+            elif c in (b'\r', b'\n'):
+                print()
+                return risposta
+            elif c == b'\x08':
+                if len(risposta) > 0:
+                    risposta = risposta[:-1]
+                    sys.stdout.write('\b \b')
+                    sys.stdout.flush()
+            else:
+                try:
+                    char = c.decode('utf-8')
+                    risposta += char
+                    sys.stdout.write(char)
+                    sys.stdout.flush()
+                except: pass
+        else:
+            import tty, termios
+            fd = sys.stdin.fileno()
+            old_settings = termios.tcgetattr(fd)
+            try:
+                tty.setraw(fd)
+                c = sys.stdin.read(1)
+            finally:
+                termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)
+            if c == '\x1b':
+                print()
+                raise InterruptedError("ESC")
+            elif c in ('\r', '\n'):
+                print()
+                return risposta
+            elif c in ('\x7f', '\x08'):
+                if len(risposta) > 0:
+                    risposta = risposta[:-1]
+                    sys.stdout.write('\b \b')
+                    sys.stdout.flush()
+            elif c == '\x03':
+                raise KeyboardInterrupt
+            else:
+                risposta += c
+                sys.stdout.write(c)
+                sys.stdout.flush()
+
+def chiedi_scelta(prompt_testo, opzioni_valide):
+    while True:
+        scelta = leggi_input(prompt_testo).upper().strip()
+        if scelta in opzioni_valide:
+            return scelta
+        cprint("\n❌ Scelta non valida. Scegli una delle opzioni tra parentesi.", "red")
+
+def stampa_lenta(testo, colore=None, attrs=None, ritardo=0.03):
+    salta_animazione = False
+    if is_windows:
+        while msvcrt.kbhit():
+            msvcrt.getch()
+    for carattere in testo:
+        if not salta_animazione:
+            if is_windows:
+                if msvcrt.kbhit():
+                    tasto = msvcrt.getch()
+                    if tasto in (b'\r', b'\n'):
+                        salta_animazione = True
+            else:
+                i, o, e = select.select([sys.stdin], [], [], 0)
+                if i:
+                    sys.stdin.readline()
+                    salta_animazione = True
+        char_da_stampare = colored(carattere, colore, attrs=attrs) if colore else carattere
+        sys.stdout.write(char_da_stampare)
+        sys.stdout.flush()
+        if not salta_animazione:
+            time.sleep(ritardo)
+    print()
+
+def game_over(messaggio, stato, capitano):
+    dati = carica_dati()
+    dati["stats"]["morti"] += 1
+    salva_dati(dati)
+    print()
+    cprint("="*60, "red", attrs=["bold"])
+    stampa_lenta(messaggio, "red")
+    cprint("\n💀 === GAME OVER === 💀\n", "red", attrs=["bold", "blink"])
+    cprint("="*60, "red", attrs=["bold"])
+    archivia_partita(capitano, stato, "Morto in mare")
+    return False
+
+def variazione_stat(messaggio, colore):
+    cprint(f"  {messaggio}", colore, attrs=["bold"])
+
+
+# ==========================================
+#CICLO DI GIOCO E SCENARI
+# ==========================================
