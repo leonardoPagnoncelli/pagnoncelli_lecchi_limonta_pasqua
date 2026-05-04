@@ -133,6 +133,16 @@ def leggi_input(prompt_testo):
                 sys.stdout.write(c)
                 sys.stdout.flush()
 
+def chiedi_opzione(prompt_testo):
+    while True:
+        scelta = leggi_input(prompt_testo + " (S/N): ").upper().strip()
+        if scelta == "S":
+            return True
+        elif scelta == "N":
+            return False
+        else:
+            cprint("\n❌ Scelta non valida. Inserisci S o N.", "red")
+
 def chiedi_scelta(prompt_testo, opzioni_valide):
     while True:
         scelta = leggi_input(prompt_testo).upper().strip()
