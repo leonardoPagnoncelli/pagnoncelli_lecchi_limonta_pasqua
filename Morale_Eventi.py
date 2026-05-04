@@ -262,3 +262,191 @@ def evento_albatro(stato): #ALBATRO-1
     else:
         stato["avvistamenti_albatro"] += 1
         nuovo_mondo.stampa_lenta("🐦 L'albatro scappa dopo il fuoco. Cattivo presagio...", "cyan")
+
+
+def evento_scialuppa(stato): #SCIALUPPA
+    nuovo_mondo.stampa_lenta("🛟 Scialuppa in difficoltà avvistata nel mare!", "cyan", attrs=["bold"])
+
+    for _ in range(4):
+        ruolo = random.choice(list(Stati_Ingaggio.NOMI_RUOLO.keys()))
+        nome = Stati_Ingaggio.NOMI_RUOLO[ruolo]
+
+        stato["equipaggio"][ruolo] = stato["equipaggio"].get(ruolo, 0) + 1
+        morale_casuale = random.randint(25, 75)
+        stato["morale_individuale"][nome] = morale_casuale
+        
+        nuovo_mondo.stampa_lenta(
+            f"  ✓ {nome} ({ruolo}) salvato, morale: {morale_casuale}",
+            "green"
+        )
+
+    merci_cassa = ["armi", "sale", "stoffa", "coltelli", "diamanti"]
+    nuovo_mondo.stampa_lenta("  🎁 Cassa ritrovata:", "yellow")
+    for m in merci_cassa:
+        bonus = random.randint(10, 20)
+        stato["merci"][m] = stato["merci"].get(m, 0) + bonus
+        nuovo_mondo.stampa_lenta(f"     +{bonus} {m}", "yellow")
+
+
+def evento_epidemia(stato): #EPIDEMIA
+    malati = []
+    curati = []
+    morti = []
+
+    medici = stato["equipaggio"].get("medici", 0)
+    bottiglie = stato["merci"]["bottiglie_medicinale"]
+
+    nuovo_mondo.stampa_lenta("🦠 EPIDEMIA! Una malattia misteriosa dilaga sulla nave!", "yellow", attrs=["bold"])
+
+    for membro in list(stato["morale_individuale"].keys()):
+        if random.random() < 0.7:
+            malati.append(membro)
+
+    for membro in malati:
+        if medici > 0 and bottiglie > 0:
+            bottiglie -= 1
+            curati.append(membro)
+            nuovo_mondo.stampa_lenta(f"  ✓ {membro} curato", "green")
+        else:
+            morti.append(membro)
+            nuovo_mondo.stampa_lenta(f"  💀 {membro} non poteva essere salvato", "red")
+
+    stato["merci"]["bottiglie_medicinale"] = bottiglie
+
+    for membro in morti:
+        if membro in stato["morale_individuale"]:
+            del stato["morale_individuale"][membro]
+        
+        for ruolo, nome in Stati_Ingaggio.NOMI_RUOLO.items():
+            if membro.startswith(nome):
+                stato["equipaggio"][ruolo] = max(0, stato["equipaggio"].get(ruolo, 0) - 1)
+                break
+
+    nuovo_mondo.stampa_lenta(f"🦠 Epidemia riassunto | Malati: {len(malati)} | Curati: {len(curati)} | Morti: {len(morti)} | Bottiglie rimaste: {bottiglie}","yellow" if len(morti) == 0 else "red")
+
+    varia_morale_tutti(stato, -10, "scorte esaurite")
+
+
+def evento_pirati(stato): #PIRATI
+    pirati = random.randint(3, 10)
+    equipaggio_vivo = Stati_Ingaggio.conta_equipaggio(stato)
+    difensori = min(stato["merci"]["armi"], equipaggio_vivo)
+
+    uomini_persi = max(0, pirati - difensori)
+    stato["merci"]["armi"] = max(0, stato["merci"]["armi"] - difensori)
+
+    if uomini_persi <= 0:
+        nuovo_mondo.stampa_lenta(f"⚔️  Attacco pirata respinto! {pirati} pirati vs {difensori} difensori", "green",attrs=["bold"])
+        varia_morale_tutti(stato, +5, "vittoria contro i pirati")
+        return
+
+    nuovo_mondo.stampa_lenta(f"⚔️  ATTACCO PIRATA! {pirati} pirati vs {difensori} difensori | {uomini_persi} perdite","red",attrs=["bold"])
+
+    for _ in range(min(uomini_persi, equipaggio_vivo)):
+        vittima = Stati_Ingaggio.rimuovi_random(stato)
+        nuovo_mondo.stampa_lenta(f"  💀 {vittima or '1 membro'} caduto in battaglia", "red")
+    
+    varia_morale_tutti(stato, -15, "morte in battaglia")
+    aggiungi_punti_ammutinamento(stato, 15, "vittime in battaglia pirata")
+
+
+def evento_timone(stato): #TIMONE
+    if stato["equipaggio"].get("meccanici", 0) > 0:
+        stato["settimane_extra"] = stato.get("settimane_extra", 0) + 1
+        nuovo_mondo.stampa_lenta("🔧 Un meccanico ripara il timone rapidamente (+1 settimana)", "green")
+    else:
+        extra = random.randint(2, 4)
+        stato["settimane_extra"] = stato.get("settimane_extra", 0) + extra
+        nuovo_mondo.stampa_lenta(f"⚙️  Timone riparato malamente (+{extra} settimane)", "yellow")
+
+def evento_vento(stato): #VENTO
+    if stato["equipaggio"].get("navigatori", 0) > 0:
+        stato["settimane_risparmiate"] = stato.get("settimane_risparmiate", 0) + 1
+        nuovo_mondo.stampa_lenta("🧭 Un navigatore esperto gestisce le raffiche (+1 settimana risparmiata)", "green")
+    else:
+        extra = random.randint(2, 4)
+        stato["settimane_extra"] = stato.get("settimane_extra", 0) + extra
+        nuovo_mondo.stampa_lenta(f"🌪️  Raffiche di vento causano rallentamento (+{extra} settimane)", "yellow")
+
+
+def evento_isola(stato): #ISOLA
+    nuovo_mondo.stampa_lenta("🏝️  Un'isola sconosciuta appare all'orizzonte!", "cyan")
+    
+    if not nuovo_mondo.chiedi_scelta("Approdare sull'isola?"):
+        nuovo_mondo.stampa_lenta("⛵ Decidi di non approdare e continui il viaggio", "cyan")
+        return
+
+    extra = random.choice([1, 2])
+    stato["settimane_extra"] = stato.get("settimane_extra", 0) + extra
+    nuovo_mondo.stampa_lenta(f"🏝️  Approdo all'isola (+{extra} settimane)", "yellow")
+
+    if random.random() > 0.5:
+        nuovo_mondo.stampa_lenta("🏝️  L'isola è disabitata. Raccogliete risorse e ripartite.", "cyan")
+        nuovo_mondo.stampa_lenta("  +5 rifornimenti vari", "green")
+        for m in ["sale", "legna", "acqua"]:
+            if m in stato["merci"]:
+                stato["merci"][m] = stato["merci"].get(m, 0) + 5
+        return
+
+    if random.random() < 0.5:
+        nuovo_mondo.stampa_lenta("👹 Gli abitanti sono ostili! Fuggi rapidamente dalla spiaggia!", "red", attrs=["bold"])
+        perdite = random.randint(1, 3)
+        for _ in range(min(perdite, Stati_Ingaggio.conta_equipaggio(stato))):
+            Stati_Ingaggio.rimuovi_random(stato)
+        varia_morale_tutti(stato, -20, "fuga dagli abitanti ostili")
+        return
+
+    nuovo_mondo.stampa_lenta("🏝️  Gli abitanti sono pacifici e accoglienti!", "green", attrs=["bold"])
+    
+    if stato["avvistamenti_albatro"] > 0 and not stato.get("albatro_ucciso"):
+        bonus = random.randint(20, 40)
+        ragione = "(fortunati! Albatro vivo visto)"
+    else:
+        bonus = random.randint(5, 20)
+        ragione = "(baratto amichevole)"
+
+    merci_bonus = ["armi", "sale", "stoffa", "coltelli", "diamanti"]
+    nuovo_mondo.stampa_lenta(f"  🎁 Doni ricevuti {ragione}:", "green")
+    for m in merci_bonus:
+        stato["merci"][m] = stato["merci"].get(m, 0) + bonus
+        nuovo_mondo.stampa_lenta(f"     +{bonus} {m}", "green")
+    
+    varia_morale_tutti(stato, +10, "approdo amichevole")
+
+
+def evento_uomo_in_mare(stato): #UOMO IN MARE
+    nuovo_mondo.stampa_lenta("🌊 UOMO IN MARE! Un'onda gigantesca spazza il ponte senza preavviso!", "red", attrs=["bold"])
+    ruoli_vivi = [r for r in stato['equipaggio'] if stato['equipaggio'][r] > 0]
+    
+    if ruoli_vivi:
+        ruolo = random.choice(ruoli_vivi)
+        vittima = Stati_Ingaggio.rimuovi_membro(stato, ruolo)
+        varia_morale_tutti(stato, -15, "collega caduto in mare")
+        nuovo_mondo.variazione_stat(f"💀 Hai perso {vittima or f'1 {ruolo}'}!", "red")
+        aggiungi_punti_ammutinamento(stato, 10, "morte in mare")
+    else:
+        nuovo_mondo.stampa_lenta("Miracolosamente, nessuno cade.", "green")
+
+
+def evento_pesca_miracolosa(stato): #PESCA MIRACOLOSA
+    nuovo_mondo.stampa_lenta("🎣 Un banco di pesci enormi circonda la nave. Pesca miracolosa!", "green", attrs=["bold"]) 
+    carne_guadagnata = random.randint(8, 20)
+    stato["merci"]["carne"] = stato["merci"].get("carne", 0) + carne_guadagnata
+    nuovo_mondo.variazione_stat(f"📈 +{carne_guadagnata} 🥩 Carne (pesca miracolosa)", "green")
+    varia_morale_tutti(stato, +5, "pesca miracolosa")
+
+
+def evento_tempesta_miracolosa(stato): #TEMPESTA MIRACOLOSA
+    nuovo_mondo.stampa_lenta("⛈️  Una tempesta provvidenziale! La pioggia riempie ogni contenitore e lava i malati.", "cyan", attrs=["bold"])
+    acqua_guadagnata = random.randint(10, 25)
+    stato["merci"]["acqua"] = stato["merci"].get("acqua", 0) + acqua_guadagnata
+    nuovo_mondo.variazione_stat(f"📈 +{acqua_guadagnata} 💧 Acqua", "green")
+    varia_morale_tutti(stato, +15, "tempesta miracolosa")
+
+
+def evento_venti_favorevoli(stato): #VENTI FAVOREVOLI
+    nuovo_mondo.stampa_lenta("💨 VENTI FAVOREVOLI! Le vele si gonfiano al massimo. Avanzate di settimane in giorni!", "green", attrs=["bold"])  
+    stato['settimane_risparmiate'] = stato.get('settimane_risparmiate', 0) + 1
+    bonus = random.randint(5, 15)
+    varia_morale_tutti(stato, bonus, "venti favorevoli")
+    nuovo_mondo.variazione_stat("📈 Viaggio accorciato di 1 settimana!", "green")
