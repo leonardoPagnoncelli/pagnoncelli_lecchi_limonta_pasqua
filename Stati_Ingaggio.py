@@ -1,6 +1,3 @@
-
-# STATO, INGAGGIO, PROVVISTE, MERCI (LEO)
-# Stati_Ingaggio.py
 """
 Leo — Gestione di:
   - Struttura dati dello stato (crea_stato_iniziale → in nuovo_mondo.py)
