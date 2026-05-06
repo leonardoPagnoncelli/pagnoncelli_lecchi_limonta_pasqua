@@ -1,11 +1,4 @@
-"""
-Leo — Gestione di:
-  - Struttura dati dello stato (crea_stato_iniziale → in nuovo_mondo.py)
-  - Fase 1: Arruolamento della flotta
-  - Fase 2: Acquisto provviste
-  - Fase 3: Acquisto merci
-  - Utility: stampa_risorse, conta_equipaggio, aggiungi_membro, etc.
-"""
+#Pagnoncelli
 
 from termcolor import colored, cprint
 import random
@@ -55,13 +48,8 @@ COSTI_MERCI = {
     "diamanti": 200
 }
 
-# TODO-49: settimane stimate totali usate per il suggerito acquisto scorte
 SETTIMANE_STIMATE_VIAGGIO = 16
-
-# Limite massimo equipaggio (INGAGGIO-1)
 MAX_EQUIPAGGIO = 16
-
-# Punti ammutinamento per nessun cuoco (TODO-13)
 PA_NESSUN_CUOCO = 30
 
 # ==========================================
@@ -69,7 +57,6 @@ PA_NESSUN_CUOCO = 30
 # ==========================================
 
 def stampa_risorse(stato):
-    """Mostra risorse correnti del giocatore."""
     ciurma_totale = sum(stato['equipaggio'].values())
     cprint(
         f"👥 Ciurma: {ciurma_totale} | 🪙 Budget: {stato['budget']:.0f} | "
@@ -103,17 +90,10 @@ def variazione_stat(messaggio, colore):
 # ==========================================
 
 def conta_equipaggio(stato):
-    """Conta il totale di membri equipaggio."""
     return sum(stato['equipaggio'].values())
 
 def aggiungi_membro(stato, ruolo, nome=None):
-    """
-    Aggiunge un membro con morale individuale.
-    BUG-5 fix: il nome viene calcolato PRIMA di incrementare l'equipaggio,
-    usando il contatore progressivo per ruolo per evitare salti di indice.
-    """
     if nome is None:
-        # Conta quanti membri di questo ruolo esistono già (prima di aggiungere)
         n_esistenti = stato['equipaggio'].get(ruolo, 0)
         nome = f"{NOMI_RUOLO.get(ruolo, ruolo)}_{n_esistenti + 1}"
     stato['equipaggio'][ruolo] = stato['equipaggio'].get(ruolo, 0) + 1
@@ -121,11 +101,6 @@ def aggiungi_membro(stato, ruolo, nome=None):
     return nome
 
 def rimuovi_membro(stato, ruolo):
-    """
-    Rimuove il membro con morale più bassa del ruolo dato.
-    BUG-2 fix: aggiorna costo_sett_ruolo sottraendo il costo/sett del membro
-    rimosso, in modo che il calcolo stipendi finali non conti i morti.
-    """
     if stato['equipaggio'].get(ruolo, 0) > 0:
         stato['equipaggio'][ruolo] -= 1
         chiavi_ruolo = [k for k in stato['morale_individuale']
@@ -133,7 +108,6 @@ def rimuovi_membro(stato, ruolo):
         if chiavi_ruolo:
             vittima = min(chiavi_ruolo, key=lambda k: stato['morale_individuale'][k])
             del stato['morale_individuale'][vittima]
-            # BUG-2 fix: decrementa il debito stipendiale del ruolo perso
             costo_sett = COSTI_RUOLO.get(ruolo, 0)
             if costo_sett > 0 and ruolo in stato.get('costo_sett_ruolo', {}):
                 stato['costo_sett_ruolo'][ruolo] = max(
@@ -147,17 +121,12 @@ def rimuovi_membro(stato, ruolo):
 # ==========================================
 
 def controlla_morti_morale_zero(stato):
-    """
-    TODO-11: morte automatica membri con morale = 0.
-    Rimuove dalla morale_individuale e decrementa l'equipaggio.
-    """
     morti = [k for k, v in list(stato['morale_individuale'].items()) if v <= 0]
     for morto in morti:
         del stato['morale_individuale'][morto]
         for ruolo, nome_singolo in NOMI_RUOLO.items():
             if morto.startswith(nome_singolo):
                 stato['equipaggio'][ruolo] = max(0, stato['equipaggio'].get(ruolo, 0) - 1)
-                # BUG-2 fix: aggiorna anche il debito stipendiale
                 costo_sett = COSTI_RUOLO.get(ruolo, 0)
                 if costo_sett > 0 and ruolo in stato.get('costo_sett_ruolo', {}):
                     stato['costo_sett_ruolo'][ruolo] = max(
@@ -167,10 +136,6 @@ def controlla_morti_morale_zero(stato):
                 break
 
 def varia_morale_tutti(stato, delta, motivo=""):
-    """
-    Varia morale di tutti i membri dell'equipaggio.
-    Chiama controlla_morti_morale_zero dopo ogni variazione (TODO-11).
-    """
     for k in stato['morale_individuale']:
         stato['morale_individuale'][k] = max(
             0, min(100, stato['morale_individuale'][k] + delta)
@@ -184,20 +149,12 @@ def varia_morale_tutti(stato, delta, motivo=""):
     controlla_morti_morale_zero(stato)
 
 def aggiungi_punti_ammutinamento(stato, punti, motivo=""):
-    """TODO-13: aggiunge punti ammutinamento con log."""
     stato['punti_ammutinamento'] = stato.get('punti_ammutinamento', 0) + punti
     if motivo:
         variazione_stat(f"⚠️  +{punti} punti ammutinamento ({motivo})", "red")
 
-# ==========================================
-# TODO-12: EQUIPAGGIO BASSO MORALE
-# ==========================================
 
 def equipaggio_basso_morale(stato, soglia=30):
-    """
-    TODO-12: restituisce True se più della metà dell'equipaggio
-    ha morale ≤ soglia (usato dal motore viaggio per +1 settimana).
-    """
     morali = list(stato.get('morale_individuale', {}).values())
     if not morali:
         return False
@@ -209,19 +166,12 @@ def equipaggio_basso_morale(stato, soglia=30):
 # ==========================================
 
 def incrementa_settimane(stato, n=1):
-    """Incrementa le settimane realmente percorse per il calcolo stipendi."""
     stato['settimane_percorse'] = stato.get('settimane_percorse', 0) + n
 
 def consuma_scorte_dettagliate(stato, moltiplicatore=1.0):
-    """
-    TODO-05: consumi settimanali specifici per categoria.
-    STATO-7: applica razioni_moltiplicatore per categoria.
-    """
     n = conta_equipaggio(stato)
     esaurite = []
 
-    # STATO-7: assicura che razioni_moltiplicatore esista (difesa contro
-    # stati salvati pre-refactor che non hanno il campo)
     if 'razioni_moltiplicatore' not in stato:
         stato['razioni_moltiplicatore'] = {c: 1.0 for c in CONSUMI_SETTIMANALI_PER_MEMBRO}
 
@@ -254,11 +204,6 @@ def consuma_scorte_dettagliate(stato, moltiplicatore=1.0):
 # ==========================================
 
 def fase_arruolamento(stato, capitano):
-    """
-    TODO-01/02/03: esattamente 1 per ruolo obbligatorio,
-    costi differenziati, pagamento differito a fine viaggio.
-    INGAGGIO-1: limite massimo di 16 membri totali.
-    """
     import nuovo_mondo
     import Arrivo_GameOver
 
@@ -324,7 +269,6 @@ def fase_arruolamento(stato, capitano):
         )
 
         if scelta == "0":
-            # TODO-01: blocco obbligatorio — non si può salpare senza tutti i ruoli
             if not tutti_obbligatori:
                 cprint(
                     f"\n🚫 IMPOSSIBILE SALPARE! Mancano: {', '.join(NOMI_RUOLO[r] for r in mancanti)}",
@@ -362,7 +306,6 @@ def fase_arruolamento(stato, capitano):
 
             aggiungi_membro(stato, ruolo_scelto)
 
-            # TODO-02/03: costo differenziato, registrato come debito (non sottratto subito)
             stato.setdefault('debito_equipaggio', 0)
             stato['debito_equipaggio'] += costo_sett
             stato.setdefault('costo_sett_ruolo', {})
@@ -409,12 +352,6 @@ def fase_arruolamento(stato, capitano):
 # ==========================================
 
 def fase_acquisto_provviste(stato, capitano):
-    """
-    TODO-04/05/06: 4 categorie, consumi specifici, dimezzamento/raddoppio razioni.
-    TODO-49: avviso se budget insufficiente per le settimane stimate.
-    STATO-7 fix: aggiorna razioni_moltiplicatore invece di scorte dirette.
-    TODO-06 fix: costo raddoppio calcolato sulla quantità aggiuntiva corretta.
-    """
     import nuovo_mondo
 
     nuovo_mondo.pulisci_schermo()
@@ -431,7 +368,6 @@ def fase_acquisto_provviste(stato, capitano):
     n_eq = conta_equipaggio(stato)
     cprint(f"👥 Equipaggio: {n_eq} | 🪙 Budget: {stato['budget']:.0f}", "cyan", attrs=["bold"])
 
-    # TODO-49: avviso se il budget non copre il viaggio stimato
     budget_consigliato = sum(
         CONSUMI_SETTIMANALI_PER_MEMBRO[c] * n_eq * SETTIMANE_STIMATE_VIAGGIO * COSTI_SCORTE[c]
         for c in CONSUMI_SETTIMANALI_PER_MEMBRO
@@ -486,14 +422,6 @@ def fase_acquisto_provviste(stato, capitano):
     # EPILOGO-4 fix: traccia spese iniziali (campo garantito da crea_stato_iniziale)
     stato['spese_iniziali'] = stato.get('spese_iniziali', 0) + costo_totale
 
-    # ──────────────────────────────────────────
-    # TODO-06: Step 2 — gestione razioni iniziali
-    # STATO-7 fix: si aggiorna razioni_moltiplicatore, NON le scorte direttamente.
-    #   Il consumo settimanale sarà poi: consumo_base × moltiplicatore.
-    # TODO-06 fix: il costo del raddoppio è pari alle scorte acquistate
-    #   (la quantità aggiuntiva uguale all'originale), calcolato PRIMA
-    #   di modificare il moltiplicatore.
-    # ──────────────────────────────────────────
     print()
     cprint("─"*60, "yellow")
     cprint("📋 FASE 2 - GESTIONE RAZIONI INIZIALI", "yellow", attrs=["bold"])
@@ -504,7 +432,6 @@ def fase_acquisto_provviste(stato, capitano):
     print(f"  Raddoppiare: +5 morale (costa le scorte originali in monete aggiuntive)")
     print()
 
-    # STATO-7: assicura che il campo esista (difesa per salvataggi vecchi)
     stato.setdefault('razioni_moltiplicatore', {c: 1.0 for c in CONSUMI_SETTIMANALI_PER_MEMBRO})
 
     for cat in ["verdura", "frutta", "carne", "acqua"]:
@@ -519,14 +446,11 @@ def fase_acquisto_provviste(stato, capitano):
         )
 
         if scelta_razione == 'D':
-            # TODO-06: aggiorna il moltiplicatore (STATO-7)
             stato['razioni_moltiplicatore'][cat] *= 0.5
             varia_morale_tutti(stato, -5, f"razioni {cat} dimezzate")
             aggiungi_punti_ammutinamento(stato, 30, "razioni ridotte")
 
         elif scelta_razione == 'R':
-            # TODO-06 fix: costo = quantità acquistata × prezzo unitario
-            # (si acquista una quantità aggiuntiva pari a quella già caricata)
             quantita_aggiuntiva = stato['scorte'][cat]
             costo_extra = quantita_aggiuntiva * COSTI_SCORTE[cat]
 
@@ -556,13 +480,6 @@ def fase_acquisto_provviste(stato, capitano):
 # ==========================================
 
 def fase_merci_arsenale(stato, capitano):
-    """
-    TODO-07/08: 6 tipi di merci barattabili, niente legno/carpentiere.
-    MERCI-1 fix: prezzi allineati al resto del progetto (COSTI_MERCI).
-    BUG-3 fix: le spese vengono calcolate incrementalmente durante l'acquisto,
-    non a posteriori sulle merci totali (che potrebbe includere stock precedenti).
-    EPILOGO-4 fix: traccia le spese in stato['spese_iniziali'].
-    """
     import nuovo_mondo
 
     nuovo_mondo.pulisci_schermo()
@@ -589,8 +506,6 @@ def fase_merci_arsenale(stato, capitano):
     cprint(f"🪙 Budget disponibile: {stato['budget']:.0f}", "cyan", attrs=["bold"])
     print()
 
-    # BUG-3 fix: si accumula la spesa di questa sessione di acquisto,
-    # non si ricalcola sull'intero stato['merci'] (che include stock pre-esistenti)
     spesa_merci_sessione = 0
 
     for codice, (nome, costo) in catalogo_merci.items():
@@ -647,11 +562,6 @@ def fase_merci_arsenale(stato, capitano):
 # ==========================================
 
 def normalizza_stato_ingaggio(stato):
-    """
-    Aggiunge i campi gestiti da questo modulo se mancanti
-    (compatibilità con salvataggi precedenti al refactor).
-    Chiamare da nuovo_mondo.normalizza_stato().
-    """
     stato.setdefault('debito_equipaggio', 0)
     stato.setdefault('costo_sett_ruolo', {})
     stato.setdefault('settimane_percorse', 0)
@@ -671,10 +581,6 @@ def normalizza_stato_ingaggio(stato):
 
 
 def campi_stato_iniziale():
-    """
-    Restituisce i campi di competenza di questo modulo
-    da includere in crea_stato_iniziale() in nuovo_mondo.py.
-    """
     return {
         "equipaggio": {
             "marinai": 0,
