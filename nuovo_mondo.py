@@ -25,7 +25,7 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 FILE_SALVATAGGIO = os.path.join(BASE_DIR, "galeone_save.json")
 
 def pulisci_schermo():
-    os.system('cls' if os.name == 'nt' else 'clear')
+    print("\033[H\033[2J", end="", flush=True) # universale per ogni OS  con ANSI 
 
 def carica_dati():
     dati_base = {
@@ -89,53 +89,72 @@ def leggi_input(prompt_testo):
     sys.stdout.write(prompt_testo)
     sys.stdout.flush()
     risposta = ""
-    while True:
-        if is_windows:
+    
+    is_windows = (os.name == 'nt')
+
+    if is_windows:
+        import msvcrt
+        while True:
             c = msvcrt.getch()
-            if c == b'\x1b':
+            
+            if c == b'\x1b':  # Tasto ESC
                 print()
                 raise InterruptedError("ESC")
-            elif c in (b'\r', b'\n'):
+            elif c in (b'\r', b'\n'):  # Tasto Invio
                 print()
                 return risposta
-            elif c == b'\x08':
+            elif c == b'\x08':  # Backspace
                 if len(risposta) > 0:
                     risposta = risposta[:-1]
                     sys.stdout.write('\b \b')
                     sys.stdout.flush()
+            elif c == b'\x03':  # Ctrl+C
+                raise KeyboardInterrupt
+            elif c in (b'\x00', b'\xe0'):  # Ignora i tasti speciali (es. Frecce direzionali)
+                msvcrt.getch()  # "Brucia" il secondo byte del tasto speciale
             else:
                 try:
                     char = c.decode('utf-8')
                     risposta += char
                     sys.stdout.write(char)
                     sys.stdout.flush()
-                except: pass
-        else:
-            import tty, termios
-            fd = sys.stdin.fileno()
-            old_settings = termios.tcgetattr(fd)
-            try:
-                tty.setraw(fd)
+                except UnicodeDecodeError:
+                    pass
+
+    else:
+        # Mac / Linux
+        import tty
+        import termios
+        fd = sys.stdin.fileno()
+        old_settings = termios.tcgetattr(fd)
+        
+        try:
+            # Imposta la modalità raw UNA SOLA VOLTA all'inizio
+            tty.setraw(fd)
+            while True:
                 c = sys.stdin.read(1)
-            finally:
-                termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)
-            if c == '\x1b':
-                print()
-                raise InterruptedError("ESC")
-            elif c in ('\r', '\n'):
-                print()
-                return risposta
-            elif c in ('\x7f', '\x08'):
-                if len(risposta) > 0:
-                    risposta = risposta[:-1]
-                    sys.stdout.write('\b \b')
+                
+                if c == '\x1b':  # Tasto ESC
+                    # Ritorna alla riga normale prima di sollevare l'errore
+                    sys.stdout.write('\r\n') 
+                    raise InterruptedError("ESC")
+                elif c in ('\r', '\n'):  # Tasto Invio
+                    sys.stdout.write('\r\n')
+                    return risposta
+                elif c in ('\x7f', '\x08'):  # Backspace
+                    if len(risposta) > 0:
+                        risposta = risposta[:-1]
+                        sys.stdout.write('\b \b')
+                        sys.stdout.flush()
+                elif c == '\x03':  # Ctrl+C
+                    raise KeyboardInterrupt
+                else:
+                    risposta += c
+                    sys.stdout.write(c)
                     sys.stdout.flush()
-            elif c == '\x03':
-                raise KeyboardInterrupt
-            else:
-                risposta += c
-                sys.stdout.write(c)
-                sys.stdout.flush()
+        finally:
+            # Ripristina il terminale alla normalità alla fine, in ogni caso
+            termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)
 
 def chiedi_opzione(prompt_testo):
     while True:
