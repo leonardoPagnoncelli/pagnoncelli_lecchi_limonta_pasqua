@@ -229,11 +229,10 @@ def fase_arruolamento(stato, capitano):
             )
             print(colored("\n  0.", "dark_grey") + " 🚢 Salpa (NON disponibile - ingaggia prima tutti i ruoli)")
 
-        # INGAGGIO-1: opzione marinaio extra disabilitata a limite raggiunto
         print()
         nuovo_mondo.stampa_lenta("  ── Ingaggia membri extra ──", "dark_grey")
         opzioni_extra = {}
-        lettera = ord('a')
+        lettera = ord('1')
         for ruolo, (etichetta, costo) in ruoli_info.items():
             tasto = chr(lettera)
             opzioni_extra[tasto] = ruolo
