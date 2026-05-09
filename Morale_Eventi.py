@@ -4,7 +4,7 @@ import nuovo_mondo
 import random
 
 
-def varia_morale_tutti(stato, delta, motivo=""):
+def varia_morale_tutti(stato, delta:int, motivo=""):
     delta_map = {
         "venti favorevoli": lambda: random.randint(5, 15),
         "razioni ridotte": -5,
@@ -20,8 +20,8 @@ def varia_morale_tutti(stato, delta, motivo=""):
 
     if motivo in delta_map:
         valore = delta_map[motivo]
-        if callable(valore):
-            delta = valore()
+        if callable(valore): # callable = funzione che restituisce un valore dinamico da un oggetto non definito
+            delta = delta_map[motivo]()  
         else:
             delta = valore
 
@@ -32,7 +32,6 @@ def varia_morale_tutti(stato, delta, motivo=""):
         nuovo_mondo.variazione_stat(f"📊 Morale {delta:+} ({motivo})", "green" if delta > 0 else "red")
 
     controlla_morti_morale_zero(stato)
-
 
 def controlla_morti_morale_zero(stato):
     morti = [k for k, v in stato["morale_individuale"].items() if v <= 0]
@@ -83,7 +82,7 @@ def calcola_ammutinamento(stato):
     p -= 10 * stato.get("settimane_risparmiate", 0)
 
     if p >= 100:
-        nuovo_mondo.game_over("Ammutinamento totale")
+        nuovo_mondo.game_over("Ammutinamento totale", "", "")
     elif 1 <= p < 100:
         nuovo_mondo.stampa_lenta(f"⚠️ Ammutinamento: {p}% | Cause: {', '.join(cause)}", "red")
 
@@ -302,7 +301,7 @@ def evento_pirati(stato):  # PIRATI
     nuovo_mondo.stampa_lenta(f"⚔️  ATTACCO PIRATA! {pirati} pirati vs {difensori} difensori | {uomini_persi} perdite", "red", attrs=["bold"])
 
     for i in range(min(uomini_persi, equipaggio_vivo)):
-        vittima = Stati_Ingaggio.rimuovi_random(stato)
+        vittima = Stati_Ingaggio.rimuovi_membro(stato, None)
         nuovo_mondo.stampa_lenta(f"  💀 {vittima or '1 membro'} caduto in battaglia", "red")
 
     varia_morale_tutti(stato, -15, "morte in battaglia")

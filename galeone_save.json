@@ -1,0 +1,186 @@
+{
+    "stats": {
+        "morti": 1,
+        "vittorie_epiche": 1,
+        "vittorie_pirro": 0,
+        "rovine": 0
+    },
+    "salvataggi": {
+        "test1": {
+            "capitano": "Senza Nome",
+            "stato": {
+                "fase": "nuovo_mondo",
+                "budget": 155.0,
+                "spese_iniziali": 1845.0,
+                "scorte": {
+                    "verdura": 48.0,
+                    "frutta": 96.0,
+                    "carne": 96.0,
+                    "acqua": 48.0
+                },
+                "razioni_moltiplicatore": {
+                    "verdura": 1.0,
+                    "frutta": 1.0,
+                    "carne": 1.0,
+                    "acqua": 1.0
+                },
+                "merci": {
+                    "bottiglie_medicinale": 5,
+                    "armi": 8,
+                    "sale": 3,
+                    "stoffa": 4,
+                    "coltelli": 9,
+                    "diamanti": 1,
+                    "carne": 26,
+                    "acqua": 37
+                },
+                "risorse_baratto": {
+                    "perle": 0.0,
+                    "manufatti": 0.0,
+                    "spezie": 0.0
+                },
+                "barattato": {
+                    "sale": 0,
+                    "stoffa": 0,
+                    "coltelli": 0,
+                    "diamanti": 0
+                },
+                "morale_individuale": {
+                    "Cuoco_1": 100,
+                    "Cuoco_2": 100,
+                    "Marinaio_1": 100,
+                    "Meccanico_1": 100,
+                    "Medico_1": 100,
+                    "Navigatore_1": 100,
+                    "Navigatore_2": 100,
+                    "Meccanico_2": 100,
+                    "Marinaio_2": 100,
+                    "Medico_2": 100,
+                    "Cuoco_3": 100,
+                    "Meccanico_3": 100,
+                    "Medico_3": 100
+                },
+                "punti_ammutinamento": 0,
+                "integrita": 100,
+                "equipaggio": {
+                    "marinai": 2,
+                    "cuochi": 3,
+                    "meccanici": 3,
+                    "medici": 3,
+                    "navigatori": 2
+                },
+                "debito_equipaggio": 225,
+                "costo_sett_ruolo": {
+                    "cuochi": 45,
+                    "marinai": 20,
+                    "meccanici": 45,
+                    "medici": 75,
+                    "navigatori": 40
+                },
+                "albatro_ucciso": true,
+                "albatro_benevolo": false,
+                "avvistamenti_albatro": 1,
+                "eventi_accaduti": [],
+                "settimane_risparmiate": 0,
+                "settimane_extra": 0,
+                "settimane_percorse": 8,
+                "morti_recenti": 0,
+                "eventi_negativi": 0,
+                "naufraghi_tot": 0,
+                "esito": "Morto in mare",
+                "relazione_indigeni": 35,
+                "doni_offerti": [],
+                "cerimonia_completata": false
+            }
+        },
+        "test2": {
+            "capitano": "Sara",
+            "stato": {
+                "fase": "ritorno",
+                "budget": 475.0,
+                "spese_iniziali": 1525.0,
+                "scorte": {
+                    "verdura": 35.0,
+                    "frutta": 60.0,
+                    "carne": 60.0,
+                    "acqua": 35.0
+                },
+                "razioni_moltiplicatore": {
+                    "verdura": 1.0,
+                    "frutta": 1.0,
+                    "carne": 1.0,
+                    "acqua": 1.0
+                },
+                "merci": {
+                    "bottiglie_medicinale": 0,
+                    "armi": 0,
+                    "sale": 1,
+                    "stoffa": 2,
+                    "coltelli": 1,
+                    "diamanti": 1,
+                    "carne": 16
+                },
+                "risorse_baratto": {
+                    "perle": 35.0,
+                    "manufatti": 2.5,
+                    "spezie": 0.0
+                },
+                "barattato": {
+                    "sale": 1,
+                    "stoffa": 0,
+                    "coltelli": 2,
+                    "diamanti": 1
+                },
+                "morale_individuale": {
+                    "Cuoco_1": 100,
+                    "Marinaio_1": 100,
+                    "Cuoco_2": 100,
+                    "Marinaio_2": 100,
+                    "Meccanico_1": 100,
+                    "Meccanico_2": 100,
+                    "Medico_1": 100,
+                    "Medico_2": 100,
+                    "Navigatore_1": 100,
+                    "Navigatore_2": 100
+                },
+                "punti_ammutinamento": 0,
+                "integrita": 100,
+                "equipaggio": {
+                    "marinai": 2,
+                    "cuochi": 2,
+                    "meccanici": 2,
+                    "medici": 2,
+                    "navigatori": 2
+                },
+                "debito_equipaggio": 170,
+                "costo_sett_ruolo": {
+                    "cuochi": 30,
+                    "marinai": 20,
+                    "meccanici": 30,
+                    "medici": 50,
+                    "navigatori": 40
+                },
+                "albatro_ucciso": false,
+                "albatro_benevolo": false,
+                "avvistamenti_albatro": 1,
+                "eventi_accaduti": [
+                    "infestazione_ratti",
+                    "epidemia",
+                    "ondata"
+                ],
+                "settimane_risparmiate": 2,
+                "settimane_extra": 0,
+                "settimane_percorse": 14,
+                "morti_recenti": 0,
+                "eventi_negativi": 0,
+                "naufraghi_tot": 0,
+                "esito": "Vittoria Epica",
+                "relazione_indigeni": 67,
+                "doni_offerti": [
+                    "sale"
+                ],
+                "cerimonia_completata": false
+            }
+        }
+    }
+}

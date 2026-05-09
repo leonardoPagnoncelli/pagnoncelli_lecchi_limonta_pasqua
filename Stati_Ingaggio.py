@@ -179,7 +179,6 @@ def consuma_scorte_dettagliate(stato, moltiplicatore=1.0):
 
 def fase_arruolamento(stato, capitano):
 
-
     ruoli_info = {
         "cuochi":    ("🍲 Cuoco",      15),
         "marinai":   ("🪢 Marinaio",   10),
@@ -231,15 +230,21 @@ def fase_arruolamento(stato, capitano):
             print(colored("\n  0.", "dark_grey") + " 🚢 Salpa (NON disponibile - ingaggia prima tutti i ruoli)")
 
         # INGAGGIO-1: opzione marinaio extra disabilitata a limite raggiunto
-        if ciurma_tot < MAX_EQUIPAGGIO:
-            print(colored("  6.", "magenta") + " 🪢 Ingaggia Marinaio Extra (supporto in combattimento)")
-        else:
-            print(colored("  6.", "dark_grey") + f" 🪢 Limite equipaggio raggiunto ({MAX_EQUIPAGGIO}/{MAX_EQUIPAGGIO})")
+        print()
+        nuovo_mondo.stampa_lenta("  ── Ingaggia membri extra ──", "dark_grey")
+        opzioni_extra = {}
+        lettera = ord('a')
+        for ruolo, (etichetta, costo) in ruoli_info.items():
+            tasto = chr(lettera)
+            opzioni_extra[tasto] = ruolo
+            if ciurma_tot < MAX_EQUIPAGGIO:
+                print(colored(f"  {tasto}.", "magenta") + f" ➕ {etichetta} extra ({costo}🪙/sett)")
+            else:
+                print(colored(f"  {tasto}.", "dark_grey") + f" ➕ {etichetta} extra (limite raggiunto)")
+            lettera += 1
 
-        scelta = nuovo_mondo.chiedi_scelta(
-            colored("\n👉 Scegli (0-6): ", "magenta", attrs=["bold"]),
-            ['0', '1', '2', '3', '4', '5', '6']
-        )
+        scelte_valide = ['0', '1', '2', '3', '4', '5'] + list(opzioni_extra.keys())
+        scelta = nuovo_mondo.chiedi_scelta(colored("\n👉 Scegli (0-6): ", "magenta", attrs=["bold"]),scelte_valide)
 
         if scelta == "0":
             if not tutti_obbligatori:
@@ -258,14 +263,6 @@ def fase_arruolamento(stato, capitano):
             idx = int(scelta) - 1
             ruolo_scelto = ruoli_lista[idx]
             etichetta, costo_sett = ruoli_info[ruolo_scelto]
-
-            if stato['equipaggio'].get(ruolo_scelto, 0) > 0:
-                cprint(
-                    f"\n❌ Hai già un {NOMI_RUOLO[ruolo_scelto]}! Ogni ruolo richiede esattamente 1 membro.",
-                    "red"
-                )
-                time.sleep(1.5)
-                continue
 
             # INGAGGIO-1: controlla il limite anche per i ruoli obbligatori
             if conta_equipaggio(stato) >= MAX_EQUIPAGGIO:
