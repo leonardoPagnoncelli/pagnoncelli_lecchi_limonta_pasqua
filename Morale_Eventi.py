@@ -43,7 +43,7 @@ def controlla_morti_morale_zero(stato):
         for ruolo, nome in Stati_Ingaggio.NOMI_RUOLO.items():
             if morto.startswith(nome):
                 stato["equipaggio"][ruolo] = max(0, stato["equipaggio"].get(ruolo, 0) - 1)
-                nuovo_mondo.cprint(f"💀 {morto} morto per morale zero", "red", attrs=["bold"])
+                nuovo_mondo.stampa_lenta(f"💀 {morto} morto per morale zero", "red", attrs=["bold"])
                 break
 
 

@@ -1,3 +1,9 @@
+from termcolor import colored
+
+import nuovo_mondo
+import Stati_Ingaggio
+import Morale_Eventi
+
 def _barra_progresso(valore, massimo, lunghezza=20):
     """Genera una barra testuale colorata per visualizzare percentuali."""
     if massimo <= 0:
@@ -23,30 +29,30 @@ def riepilogo_fine_settimana(stato, settimana, settimane_totali, fase_nome):
     Mostra scorte, equipaggio, morale individuale, integrità, punti ammutinamento,
     avanzamento viaggio e avvisi critici. Chiamato da _ciclo_viaggio ogni settimana.
     """
-    pulisci_schermo()
+    nuovo_mondo.pulisci_schermo()
     settimane_rimaste = max(0, settimane_totali - settimana)
-    n = conta_equipaggio(stato)
+    n = Stati_Ingaggio.conta_equipaggio(stato)
  
     # ── Intestazione ──────────────────────────────────────────────
-    cprint("\n" + "═" * 60, "yellow", attrs=["bold"])
-    cprint(f"  📋  RIEPILOGO SETTIMANA {settimana}  ·  {fase_nome.upper()}  ·  ~{settimane_rimaste} RIMASTE", "yellow", attrs=["bold"])
-    cprint("═" * 60, "yellow", attrs=["bold"])
+    nuovo_mondo.stampa_lenta("\n" + "═" * 60, "yellow", attrs=["bold"])
+    nuovo_mondo.stampa_lenta(f"  📋  RIEPILOGO SETTIMANA {settimana}  ·  {fase_nome.upper()}  ·  ~{settimane_rimaste} RIMASTE", "yellow", attrs=["bold"])
+    nuovo_mondo.stampa_lenta("═" * 60, "yellow", attrs=["bold"])
  
     # ── Avanzamento viaggio ───────────────────────────────────────
     print()
-    cprint("🗺️  AVANZAMENTO VIAGGIO", "cyan", attrs=["bold"])
+    nuovo_mondo.stampa_lenta("🗺️  AVANZAMENTO VIAGGIO", "cyan", attrs=["bold"])
     barra_v = _barra_progresso(settimana, settimane_totali)
     sett_extra = stato.get('settimane_extra', 0)
     sett_risp  = stato.get('settimane_risparmiate', 0)
     print(f"  {barra_v}  Sett. {settimana}/{settimane_totali}")
     if sett_extra > 0:
-        cprint(f"  ⚠️  +{sett_extra} settimane extra accumulate", "red", attrs=["bold"])
+        nuovo_mondo.stampa_lenta(f"  ⚠️  +{sett_extra} settimane extra accumulate", "red", attrs=["bold"])
     if sett_risp > 0:
-        cprint(f"  💨  -{sett_risp} settimane risparmiate", "green", attrs=["bold"])
+        nuovo_mondo.stampa_lenta(f"  💨  -{sett_risp} settimane risparmiate", "green", attrs=["bold"])
  
     # ── Stato nave ────────────────────────────────────────────────
     print()
-    cprint("⚙️  STATO NAVE", "cyan", attrs=["bold"])
+    nuovo_mondo.stampa_lenta("⚙️  STATO NAVE", "cyan", attrs=["bold"])
     integrita = stato.get('integrita', 100)
     barra_i = _barra_progresso(integrita, 100)
     col_int = _colore_soglia(integrita, 50, 25)
@@ -59,14 +65,14 @@ def riepilogo_fine_settimana(stato, settimana, settimane_totali, fase_nome):
  
     # ── Scorte ────────────────────────────────────────────────────
     print()
-    cprint("🥬 SCORTE DI BORDO", "cyan", attrs=["bold"])
+    nuovo_mondo.stampa_lenta("🥬 SCORTE DI BORDO", "cyan", attrs=["bold"])
  
     simboli_sc = {"verdura": "🥬", "frutta": "🍊", "carne": "🥩", "acqua": "💧"}
     unita_sc   = {"verdura": "kg", "frutta": "kg", "carne": "kg", "acqua": "brl"}
  
     for cat, simbolo in simboli_sc.items():
         disponibile = stato['scorte'].get(cat, 0.0)
-        fabbisogno_sett = CONSUMI_SETTIMANALI_PER_MEMBRO[cat] * n
+        fabbisogno_sett = Stati_Ingaggio.CONSUMI_SETTIMANALI_PER_MEMBRO[cat] * n
         fabbisogno_tot  = fabbisogno_sett * settimane_rimaste
         riferimento = max(fabbisogno_tot, fabbisogno_sett) or 1
         barra_s = _barra_progresso(disponibile, riferimento)
@@ -86,14 +92,14 @@ def riepilogo_fine_settimana(stato, settimana, settimane_totali, fase_nome):
  
     # ── Equipaggio e morale individuale ───────────────────────────
     print()
-    cprint("👥 EQUIPAGGIO & MORALE", "cyan", attrs=["bold"])
-    cprint(f"  Ciurma totale: {n} membri", "white")
+    nuovo_mondo.stampa_lenta("👥 EQUIPAGGIO & MORALE", "cyan", attrs=["bold"])
+    nuovo_mondo.stampa_lenta(f"  Ciurma totale: {n} membri", "white")
     print()
  
     for ruolo, n_ruolo in stato['equipaggio'].items():
         if n_ruolo == 0:
             continue
-        etichetta = NOMI_RUOLO.get(ruolo, ruolo)
+        etichetta = Stati_Ingaggio.NOMI_RUOLO.get(ruolo, ruolo)
         chiavi_ruolo = []
         for k in stato['morale_individuale']:
             if k.startswith(etichetta):
@@ -116,8 +122,8 @@ def riepilogo_fine_settimana(stato, settimana, settimane_totali, fase_nome):
         col_media = _colore_soglia(media, 60, 30)
         print()
         print(f"  ❤️  Morale medio: {colored(f'{media:.0f}/100', col_media, attrs=['bold'])}")
-        if equipaggio_basso_morale(stato, 30):
-            cprint("  🔴 PIÙ DELLA METÀ dell'equipaggio ha morale critico! Rischio rallentamento.", "red", attrs=["bold"])
+        if Morale_Eventi.equipaggio_basso_morale(stato, 30):
+            nuovo_mondo.stampa_lenta("  🔴 PIÙ DELLA METÀ dell'equipaggio ha morale critico! Rischio rallentamento.", "red", attrs=["bold"])
  
     # ── Merci e risorse baratto (solo se presenti) ─────────────────
     merci_presenti = {}
@@ -132,7 +138,7 @@ def riepilogo_fine_settimana(stato, settimana, settimane_totali, fase_nome):
  
     if merci_presenti or risorse_presenti:
         print()
-        cprint("📦 STIVA MERCI", "cyan", attrs=["bold"])
+        nuovo_mondo.stampa_lenta("📦 STIVA MERCI", "cyan", attrs=["bold"])
         simboli_merci = {
             "bottiglie_medicinale": "💊", "armi": "⚔️ ", "sale": "🧂",
             "stoffa": "🧵", "coltelli": "🔪", "diamanti": "💎"
@@ -145,10 +151,11 @@ def riepilogo_fine_settimana(stato, settimana, settimane_totali, fase_nome):
  
     # ── Budget e debito stimato ────────────────────────────────────
     print()
-    cprint("🪙 FINANZE", "cyan", attrs=["bold"])
+    nuovo_mondo.stampa_lenta("🪙 FINANZE", "cyan", attrs=["bold"])
     col_budget = _colore_soglia(stato['budget'], 500, 100)
-    print(f"  🪙 Budget attuale:      {colored(f\"{stato['budget']:.0f}🪙\", col_budget, attrs=['bold'])}")
- 
+    budget_testo = colored(f"{stato['budget']:.0f}🪙",col_budget,attrs=["bold"])
+    nuovo_mondo.stampa_lenta(f"  🪙 Budget attuale:      {budget_testo}","white")    
+    
     debito_stimato = 0
     costo_sett_ruolo = stato.get('costo_sett_ruolo', {})
     sett_percorse = stato.get('settimane_percorse', 0)
@@ -179,14 +186,14 @@ def riepilogo_fine_settimana(stato, settimana, settimane_totali, fase_nome):
  
     if avvisi:
         print()
-        cprint("🔔 AVVISI", "cyan", attrs=["bold"])
+        nuovo_mondo.stampa_lenta("🔔 AVVISI", "cyan", attrs=["bold"])
         for testo_avviso, col_avviso in avvisi:
-            cprint(f"  {testo_avviso}", col_avviso, attrs=["bold"])
+            nuovo_mondo.stampa_lenta(f"  {testo_avviso}", col_avviso, attrs=["bold"])
  
     # ── Chiusura ───────────────────────────────────────────────────
-    cprint("\n" + "═" * 60, "yellow", attrs=["bold"])
-    leggi_input(colored("📖 [Premi Invio per proseguire il viaggio...] ", "dark_grey"))
-    pulisci_schermo()
+    nuovo_mondo.stampa_lenta("\n" + "═" * 60, "yellow", attrs=["bold"])
+    nuovo_mondo.leggi_input(colored("📖 [Premi Invio per proseguire il viaggio...] ", "dark_grey"))
+    nuovo_mondo.pulisci_schermo()
  
  
 # ==========================================
@@ -204,47 +211,46 @@ def _ciclo_viaggio(stato, capitano, fase_nome, settimane_base):
         settimane_totali = settimane_base + stato.get('settimane_extra', 0) - stato.get('settimane_risparmiate', 0)
         settimane_totali = max(settimane_totali, settimana)
  
-        cprint(f"\n📅 --- SETTIMANA {settimana} DI {fase_nome.upper()} (di ~{settimane_totali}) ---", "yellow", attrs=["bold"])
-        stampa_risorse(stato)
+        nuovo_mondo.stampa_lenta(f"\n📅 --- SETTIMANA {settimana} DI {fase_nome.upper()} (di ~{settimane_totali}) ---", "yellow", attrs=["bold"])
+        Stati_Ingaggio.stampa_risorse(stato)
  
-        # TODO-12: se più della metà ha morale ≤ 30, +1 settimana extra
-        if equipaggio_basso_morale(stato, 30):
-            stampa_lenta("⚠️   Il morale è a pezzi! La navigazione rallenta terribilmente.", "red", attrs=["bold"])
+        if Morale_Eventi.equipaggio_basso_morale(stato, 30):
+            nuovo_mondo.stampa_lenta("⚠️   Il morale è a pezzi! La navigazione rallenta terribilmente.", "red", attrs=["bold"])
             stato['settimane_extra'] = stato.get('settimane_extra', 0) + 1
             settimane_totali += 1
-            cprint(f"📅 Il viaggio si allunga! Ora mancano ancora {settimane_totali - settimana} settimane.", "red")
+            nuovo_mondo.stampa_lenta(f"📅 Il viaggio si allunga! Ora mancano ancora {settimane_totali - settimana} settimane.", "red")
  
         # Evento ogni 2 settimane
         if settimana % 2 == 0:
-            gestisci_evento_casuale(stato)
+            Morale_Eventi.gestisci_evento_casuale(stato)
  
         # ── Step 4: riepilogo fine settimana ──────────────────────
         riepilogo_fine_settimana(stato, settimana, settimane_totali, fase_nome)
  
-        esito = consuma_scorte_dettagliate(stato)
-        incrementa_settimane(stato)
+        esito = Stati_Ingaggio.consuma_scorte_dettagliate(stato)
+        Stati_Ingaggio.incrementa_settimane(stato)
  
         if esito == "ammutinamento":
-            return game_over(
+            return nuovo_mondo.game_over(
                 "I punti ammutinamento hanno raggiunto il massimo. La ciurma si ribella.\n"
                 "Ti sgozzano sul ponte mentre l'alba tinge di rosso l'oceano.",
                 stato, capitano
             )
         elif esito == "affondato":
-            return game_over("La nave non regge più. L'acqua invade la stiva. Naufragate.", stato, capitano)
+            return nuovo_mondo.game_over("La nave non regge più. L'acqua invade la stiva. Naufragate.", stato, capitano)
         elif esito == "scorte_esaurite":
-            stampa_lenta("☠️  Le scorte di qualche categoria sono esaurite! L'equipaggio soffre.", "red", attrs=["bold"])
+            nuovo_mondo.stampa_lenta("☠️  Le scorte di qualche categoria sono esaurite! L'equipaggio soffre.", "red", attrs=["bold"])
  
         # TODO-14: ammutinamento a soglia punti
         if stato.get('punti_ammutinamento', 0) >= 100:
-            return game_over(
+            return nuovo_mondo.game_over(
                 "L'ammutinamento esplode! Anni di torti si riversano in una notte di fuoco e sangue.\n"
                 "Il tuo corpo viene gettato in pasto agli squali.",
                 stato, capitano
             )
  
-        if conta_equipaggio(stato) == 0:
-            return game_over("L'ultimo uomo è morto. La nave vaga senza vita verso l'abisso.", stato, capitano)
+        if Stati_Ingaggio.conta_equipaggio(stato) == 0:
+            return nuovo_mondo.game_over("L'ultimo uomo è morto. La nave vaga senza vita verso l'abisso.", stato, capitano)
  
         if settimana >= settimane_totali:
             break

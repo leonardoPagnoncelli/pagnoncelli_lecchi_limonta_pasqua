@@ -1,7 +1,7 @@
 #Pagnoncelli
-
+import Morale_Eventi
+import nuovo_mondo
 from termcolor import colored, cprint
-import random
 import time
 
 # ==========================================
@@ -38,7 +38,6 @@ CONSUMI_SETTIMANALI_PER_MEMBRO = {
     "acqua": 0.5
 }
 
-# MERCI-1 fix: prezzi allineati al resto del progetto (nuovo_mondo.py / baratto)
 COSTI_MERCI = {
     "bottiglie_medicinale": 30,
     "armi": 50,
@@ -53,7 +52,7 @@ MAX_EQUIPAGGIO = 16
 PA_NESSUN_CUOCO = 30
 
 # ==========================================
-# UTILITY DI STAMPA
+# UTILI PER STAMPA
 # ==========================================
 
 def stampa_risorse(stato):
@@ -135,31 +134,6 @@ def controlla_morti_morale_zero(stato):
                 cprint(f"  💀 {morto} è morto per morale a zero!", "red", attrs=["bold"])
                 break
 
-def varia_morale_tutti(stato, delta, motivo=""):
-    for k in stato['morale_individuale']:
-        stato['morale_individuale'][k] = max(
-            0, min(100, stato['morale_individuale'][k] + delta)
-        )
-    if motivo:
-        segno = "📈" if delta > 0 else "📉"
-        variazione_stat(
-            f"{segno} Morale {'+' if delta > 0 else ''}{delta} ({motivo})",
-            "green" if delta > 0 else "red"
-        )
-    controlla_morti_morale_zero(stato)
-
-def aggiungi_punti_ammutinamento(stato, punti, motivo=""):
-    stato['punti_ammutinamento'] = stato.get('punti_ammutinamento', 0) + punti
-    if motivo:
-        variazione_stat(f"⚠️  +{punti} punti ammutinamento ({motivo})", "red")
-
-
-def equipaggio_basso_morale(stato, soglia=30):
-    morali = list(stato.get('morale_individuale', {}).values())
-    if not morali:
-        return False
-    bassi = sum(1 for m in morali if m <= soglia)
-    return bassi > len(morali) / 2
 
 # ==========================================
 # GESTIONE SETTIMANE E SCORTE
@@ -185,8 +159,8 @@ def consuma_scorte_dettagliate(stato, moltiplicatore=1.0):
 
     if esaurite:
         for cat in esaurite:
-            varia_morale_tutti(stato, -10, f"scorte {cat} esaurite")
-            aggiungi_punti_ammutinamento(stato, 15, f"scorte {cat} esaurite")
+            Morale_Eventi.varia_morale_tutti(stato, -10, f"scorte {cat} esaurite")
+            Morale_Eventi.aggiungi_punti_ammutinamento(stato, 15, f"scorte {cat} esaurite")
 
     if stato.get('punti_ammutinamento', 0) >= 100:
         return "ammutinamento"
@@ -204,8 +178,7 @@ def consuma_scorte_dettagliate(stato, moltiplicatore=1.0):
 # ==========================================
 
 def fase_arruolamento(stato, capitano):
-    import nuovo_mondo
-    import Arrivo_GameOver
+
 
     ruoli_info = {
         "cuochi":    ("🍲 Cuoco",      15),
@@ -342,7 +315,7 @@ def fase_arruolamento(stato, capitano):
             time.sleep(0.8)
 
     if conta_equipaggio(stato) == 0:
-        return Arrivo_GameOver.game_over(
+        return nuovo_mondo.game_over(
             "Senza ciurma, i creditori ti raggiungono sul molo. Fine.", stato, capitano
         )
     return True
@@ -419,7 +392,6 @@ def fase_acquisto_provviste(stato, capitano):
         "green", attrs=["bold"]
     )
 
-    # EPILOGO-4 fix: traccia spese iniziali (campo garantito da crea_stato_iniziale)
     stato['spese_iniziali'] = stato.get('spese_iniziali', 0) + costo_totale
 
     print()
@@ -447,8 +419,8 @@ def fase_acquisto_provviste(stato, capitano):
 
         if scelta_razione == 'D':
             stato['razioni_moltiplicatore'][cat] *= 0.5
-            varia_morale_tutti(stato, -5, f"razioni {cat} dimezzate")
-            aggiungi_punti_ammutinamento(stato, 30, "razioni ridotte")
+            Morale_Eventi.varia_morale_tutti(stato, -5, f"razioni {cat} dimezzate")
+            Morale_Eventi.aggiungi_punti_ammutinamento(stato, 30, "razioni ridotte")
 
         elif scelta_razione == 'R':
             quantita_aggiuntiva = stato['scorte'][cat]
@@ -457,13 +429,12 @@ def fase_acquisto_provviste(stato, capitano):
             if stato['budget'] >= costo_extra:
                 stato['razioni_moltiplicatore'][cat] *= 2.0
                 stato['budget'] -= costo_extra
-                varia_morale_tutti(stato, +5, f"razioni {cat} raddoppiate")
+                Morale_Eventi.varia_morale_tutti(stato, +5, f"razioni {cat} raddoppiate")
                 cprint(
                     f"  💰 Spesi {costo_extra:.0f}🪙 per raddoppiare {cat} | "
                     f"Budget: {stato['budget']:.0f}🪙",
                     "yellow"
                 )
-                # EPILOGO-4: traccia anche queste spese
                 stato['spese_iniziali'] = stato.get('spese_iniziali', 0) + costo_extra
             else:
                 cprint(
@@ -493,7 +464,6 @@ def fase_merci_arsenale(stato, capitano):
     )
     print()
 
-    # MERCI-1 fix: usa COSTI_MERCI allineati
     catalogo_merci = {
         "bottiglie_medicinale": ("💊 Bottiglie Medicinale", COSTI_MERCI["bottiglie_medicinale"]),
         "armi":                 ("⚔️  Armi",               COSTI_MERCI["armi"]),
@@ -550,7 +520,6 @@ def fase_merci_arsenale(stato, capitano):
             "yellow", attrs=["bold"]
         )
 
-    # EPILOGO-4 fix: traccia spese merci nella sessione corrente
     stato['spese_iniziali'] = stato.get('spese_iniziali', 0) + spesa_merci_sessione
 
     cprint(f"\n🪙 Budget rimasto: {stato['budget']:.0f}", "cyan", attrs=["bold"])
@@ -566,14 +535,12 @@ def normalizza_stato_ingaggio(stato):
     stato.setdefault('costo_sett_ruolo', {})
     stato.setdefault('settimane_percorse', 0)
     stato.setdefault('naufraghi_tot', 0)
-    stato.setdefault('spese_iniziali', 0)          # EPILOGO-4
-    stato.setdefault('razioni_moltiplicatore', {   # STATO-7
+    stato.setdefault('spese_iniziali', 0)          
+    stato.setdefault('razioni_moltiplicatore', {   
         c: 1.0 for c in CONSUMI_SETTIMANALI_PER_MEMBRO
     })
-    # Assicura che tutti i campi di razioni_moltiplicatore esistano
     for cat in CONSUMI_SETTIMANALI_PER_MEMBRO:
         stato['razioni_moltiplicatore'].setdefault(cat, 1.0)
-    # Pulizia chiavi non valide in costo_sett_ruolo (TODO-50)
     chiavi_non_valide = [k for k in stato['costo_sett_ruolo'] if k not in COSTI_RUOLO]
     for k in chiavi_non_valide:
         del stato['costo_sett_ruolo'][k]
@@ -608,8 +575,8 @@ def campi_stato_iniziale():
         "costo_sett_ruolo": {},
         "settimane_percorse": 0,
         "naufraghi_tot": 0,
-        "spese_iniziali": 0,           # EPILOGO-4
-        "razioni_moltiplicatore": {    # STATO-7
+        "spese_iniziali": 0,          
+        "razioni_moltiplicatore": {    
             "verdura": 1.0,
             "frutta": 1.0,
             "carne": 1.0,

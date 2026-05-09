@@ -3,9 +3,10 @@
 # ==========================================
 
 import random
-from termcolor import colored, cprint
+from termcolor import colored
 
 import Stati_Ingaggio
+import nuovo_mondo
 
 
 # ==========================================
@@ -14,27 +15,27 @@ import Stati_Ingaggio
 
 def game_over(messaggio, stato, capitano):
 
-    dati = carica_dati()
+    dati = nuovo_mondo.carica_dati()
 
     dati["stats"]["morti"] += 1
 
-    salva_dati(dati)
+    nuovo_mondo.salva_dati(dati)
 
     print()
 
-    stampa_lenta("=" * 60, "red", attrs=["bold"])
+    nuovo_mondo.stampa_lenta("=" * 60, "red", attrs=["bold"])
 
-    stampa_lenta(messaggio, "red")
+    nuovo_mondo.stampa_lenta(messaggio, "red")
 
-    stampa_lenta(
+    nuovo_mondo.stampa_lenta(
         "\n💀 === GAME OVER === 💀\n",
         "red",
         attrs=["bold", "blink"]
     )
 
-    stampa_lenta("=" * 60, "red", attrs=["bold"])
+    nuovo_mondo.stampa_lenta("=" * 60, "red", attrs=["bold"])
 
-    archivia_partita(capitano, stato, "Morto in mare")
+    nuovo_mondo.archivia_partita(capitano, stato, "Morto in mare")
 
     return False
 
@@ -117,7 +118,7 @@ def aggiorna_morale_e_controlla_morti(stato, capitano):
         if ruolo in stato["equipaggio"]:
             stato["equipaggio"][ruolo] -= 1
 
-        stampa_lenta(
+        nuovo_mondo.stampa_lenta(
             "💀 " + membro + " muore di disperazione.",
             "red"
         )
@@ -204,13 +205,13 @@ def asta_nave(debito):
 
         print()
 
-        stampa_lenta(
+        nuovo_mondo.stampa_lenta(
             "💰 Offerta ricevuta: " + str(offerta) + " monete",
             "yellow",
             attrs=["bold"]
         )
 
-        scelta = chiedi_opzione("Accetti l'offerta?")
+        scelta = nuovo_mondo.chiedi_opzione("Accetti l'offerta?")
 
         if scelta:
 
@@ -239,19 +240,19 @@ def valuta_finale(
 
     print()
 
-    stampa_lenta(
+    nuovo_mondo.stampa_lenta(
         "=" * 60,
         "cyan",
         attrs=["bold"]
     )
 
-    stampa_lenta(
+    nuovo_mondo.stampa_lenta(
         " 💰 RESOCONTO FINALE DELLA SPEDIZIONE 💰 ",
         "yellow",
         attrs=["bold"]
     )
 
-    stampa_lenta(
+    nuovo_mondo.stampa_lenta(
         "=" * 60,
         "cyan",
         attrs=["bold"]
@@ -285,19 +286,19 @@ def valuta_finale(
 
     if saldo > 0:
 
-        stampa_lenta(
+        nuovo_mondo.stampa_lenta(
             "👑 La spedizione è stata un successo!",
             "green",
             attrs=["bold"]
         )
 
-        dati = carica_dati()
+        dati = nuovo_mondo.carica_dati()
 
         dati["stats"]["vittorie_epiche"] += 1
 
-        salva_dati(dati)
+        nuovo_mondo.salva_dati(dati)
 
-        archivia_partita(
+        nuovo_mondo.archivia_partita(
             capitano,
             stato,
             "Vittoria Epica"
@@ -311,20 +312,20 @@ def valuta_finale(
 
     elif saldo == 0:
 
-        stampa_lenta(
+        nuovo_mondo.stampa_lenta(
             "⚖️ Sei sopravvissuto...\n"
             "ma senza alcun guadagno.",
             "yellow",
             attrs=["bold"]
         )
 
-        dati = carica_dati()
+        dati = nuovo_mondo.carica_dati()
 
         dati["stats"]["vittorie_pirro"] += 1
 
-        salva_dati(dati)
+        nuovo_mondo.salva_dati(dati)
 
-        archivia_partita(
+        nuovo_mondo.archivia_partita(
             capitano,
             stato,
             "Vittoria di Pirro"
@@ -338,13 +339,13 @@ def valuta_finale(
 
     else:
 
-        stampa_lenta(
+        nuovo_mondo.stampa_lenta(
             "⛓️ Non riesci a pagare l'equipaggio.",
             "red",
             attrs=["bold"]
         )
 
-        scelta = chiedi_opzione(
+        scelta = nuovo_mondo.chiedi_opzione(
             "Vuoi mettere all'asta il galeone?"
         )
 
@@ -354,14 +355,14 @@ def valuta_finale(
 
             if esito:
 
-                stampa_lenta(
+                nuovo_mondo.stampa_lenta(
                     "⚖️ Riesci a saldare i debiti\n"
                     "vendendo la nave.",
                     "yellow",
                     attrs=["bold"]
                 )
 
-                archivia_partita(
+                nuovo_mondo.archivia_partita(
                     capitano,
                     stato,
                     "Nave Venduta"
@@ -369,19 +370,19 @@ def valuta_finale(
 
                 return True
 
-        dati = carica_dati()
+        dati = nuovo_mondo.carica_dati()
 
         dati["stats"]["rovine"] += 1
 
-        salva_dati(dati)
+        nuovo_mondo.salva_dati(dati)
 
-        archivia_partita(
+        nuovo_mondo.archivia_partita(
             capitano,
             stato,
             "Rovina Totale"
         )
 
-        stampa_lenta(
+        nuovo_mondo.stampa_lenta(
             "\n💀 Finisci sommerso dai debiti.\n"
             "L'equipaggio ti abbandona.\n"
             "La tua leggenda termina qui.",
