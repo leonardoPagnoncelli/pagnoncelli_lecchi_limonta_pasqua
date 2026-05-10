@@ -1,6 +1,6 @@
 {
     "stats": {
-        "morti": 1,
+        "morti": 3,
         "vittorie_epiche": 1,
         "vittorie_pirro": 0,
         "rovine": 0
@@ -180,6 +180,150 @@
                     "sale"
                 ],
                 "cerimonia_completata": false
+            }
+        },
+        "Cronaca_di_Das_4957": {
+            "capitano": "Das",
+            "stato": {
+                "fase": "andata",
+                "budget": 1656.0,
+                "spese_iniziali": 344.0,
+                "scorte": {
+                    "verdura": 0,
+                    "frutta": 0,
+                    "carne": 0,
+                    "acqua": 0
+                },
+                "razioni_moltiplicatore": {
+                    "verdura": 0.5,
+                    "frutta": 0.5,
+                    "carne": 0.5,
+                    "acqua": 0.5
+                },
+                "merci": {
+                    "bottiglie_medicinale": 1,
+                    "armi": 1,
+                    "sale": 1,
+                    "stoffa": 1,
+                    "coltelli": 1,
+                    "diamanti": 1
+                },
+                "risorse_baratto": {
+                    "perle": 0.0,
+                    "manufatti": 0.0,
+                    "spezie": 0.0
+                },
+                "barattato": {
+                    "sale": 0,
+                    "stoffa": 0,
+                    "coltelli": 0,
+                    "diamanti": 0
+                },
+                "morale_individuale": {
+                    "Cuoco_1": 40,
+                    "Marinaio_1": 40,
+                    "Meccanico_1": 40,
+                    "Medico_1": 40,
+                    "Navigatore_1": 40
+                },
+                "punti_ammutinamento": 180,
+                "integrita": 100,
+                "equipaggio": {
+                    "marinai": 1,
+                    "cuochi": 1,
+                    "meccanici": 1,
+                    "medici": 1,
+                    "navigatori": 1
+                },
+                "debito_equipaggio": 85,
+                "costo_sett_ruolo": {
+                    "cuochi": 15,
+                    "marinai": 10,
+                    "meccanici": 15,
+                    "medici": 25,
+                    "navigatori": 20
+                },
+                "albatro_ucciso": false,
+                "albatro_benevolo": false,
+                "avvistamenti_albatro": 0,
+                "eventi_accaduti": [],
+                "settimane_risparmiate": 0,
+                "settimane_extra": 0,
+                "settimane_percorse": 1,
+                "morti_recenti": 0,
+                "eventi_negativi": 0,
+                "naufraghi_tot": 0,
+                "esito": "Morto in mare"
+            }
+        },
+        "2": {
+            "capitano": "Senza Nome",
+            "stato": {
+                "fase": "andata",
+                "budget": 1040.0,
+                "spese_iniziali": 960.0,
+                "scorte": {
+                    "verdura": 0,
+                    "frutta": 0,
+                    "carne": 0,
+                    "acqua": 0
+                },
+                "razioni_moltiplicatore": {
+                    "verdura": 1.0,
+                    "frutta": 1.0,
+                    "carne": 1.0,
+                    "acqua": 1.0
+                },
+                "merci": {
+                    "bottiglie_medicinale": 5,
+                    "armi": 4,
+                    "sale": 2,
+                    "stoffa": 0,
+                    "coltelli": 5,
+                    "diamanti": 2
+                },
+                "risorse_baratto": {
+                    "perle": 0.0,
+                    "manufatti": 0.0,
+                    "spezie": 0.0
+                },
+                "barattato": {
+                    "sale": 0,
+                    "stoffa": 0,
+                    "coltelli": 0,
+                    "diamanti": 0
+                },
+                "morale_individuale": {},
+                "punti_ammutinamento": 150,
+                "integrita": 100,
+                "equipaggio": {
+                    "marinai": 0,
+                    "cuochi": 0,
+                    "meccanici": 0,
+                    "medici": 0,
+                    "navigatori": 0
+                },
+                "debito_equipaggio": 100,
+                "costo_sett_ruolo": {
+                    "cuochi": 30,
+                    "marinai": 10,
+                    "meccanici": 15,
+                    "medici": 25,
+                    "navigatori": 20
+                },
+                "albatro_ucciso": false,
+                "albatro_benevolo": false,
+                "avvistamenti_albatro": 0,
+                "eventi_accaduti": [
+                    "infestazione_ratti"
+                ],
+                "settimane_risparmiate": 0,
+                "settimane_extra": 0,
+                "settimane_percorse": 3,
+                "morti_recenti": 0,
+                "eventi_negativi": 0,
+                "naufraghi_tot": 0,
+                "esito": "Morto in mare"
             }
         }
     }
