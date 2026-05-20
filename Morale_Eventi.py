@@ -4,7 +4,7 @@ import nuovo_mondo
 import random
 
 
-def varia_morale_tutti(stato, delta:int, motivo=""):
+def varia_morale_tutti(stato, delta: int = 0, motivo=""):
     delta_map = {
         "venti favorevoli": lambda: random.randint(5, 15),
         "razioni ridotte": -5,
@@ -25,7 +25,7 @@ def varia_morale_tutti(stato, delta:int, motivo=""):
         else:
             delta = valore
 
-    for k in stato["morale_individuale"]:
+    for k in list(stato["morale_individuale"].keys()):
         stato["morale_individuale"][k] = max(0, min(100, stato["morale_individuale"][k] + delta))
 
     if motivo:
@@ -37,13 +37,19 @@ def controlla_morti_morale_zero(stato):
     morti = [k for k, v in stato["morale_individuale"].items() if v <= 0]
 
     for morto in morti:
-        del stato["morale_individuale"][morto]
+        if morto in stato["morale_individuale"]:
+            del stato["morale_individuale"][morto]
 
-        for ruolo, nome in Stati_Ingaggio.NOMI_RUOLO.items():
-            if morto.startswith(nome):
-                stato["equipaggio"][ruolo] = max(0, stato["equipaggio"].get(ruolo, 0) - 1)
-                nuovo_mondo.stampa_lenta(f"💀 {morto} morto per morale zero", "red", attrs=["bold"])
-                break
+            trovato = False
+            for ruolo, nome in Stati_Ingaggio.NOMI_RUOLO.items():
+                if morto.startswith(nome):
+                    stato["equipaggio"][ruolo] = max(0, stato["equipaggio"].get(ruolo, 0) - 1)
+                    nuovo_mondo.stampa_lenta(f"💀 {morto} morto per morale zero", "red", attrs=["bold"])
+                    trovato = True
+                    break
+            
+            if not trovato:
+                nuovo_mondo.stampa_lenta(f"⚠️  {morto} morto ma ruolo non identificato", "yellow")
 
 
 def equipaggio_basso_morale(stato, soglia=30):
@@ -51,7 +57,7 @@ def equipaggio_basso_morale(stato, soglia=30):
     if not morali:
         return False
     bassi = sum(1 for m in morali if m <= soglia)
-    return bassi > len(morali) / 2
+    return bassi * 2 > len(morali)
 
 
 def calcola_ammutinamento(stato):
@@ -70,7 +76,7 @@ def calcola_ammutinamento(stato):
         p += 30
         cause.append("Presagio di sfiga (albatro ucciso)")
 
-    if stato["avvistamenti_albatro"] > 0 and not stato.get("albatro_ucciso"):
+    if stato.get("avvistamenti_albatro", 0) > 0 and not stato.get("albatro_ucciso"):
         p -= 20
         cause.append("Ottimismo (avvistamento albatro)")
 
@@ -81,9 +87,7 @@ def calcola_ammutinamento(stato):
     p += 10 * stato.get("settimane_extra", 0)
     p -= 10 * stato.get("settimane_risparmiate", 0)
 
-    if p >= 100:
-        nuovo_mondo.game_over("Ammutinamento totale", "", "")
-    elif 1 <= p < 100:
+    if 1 <= p < 100:
         nuovo_mondo.stampa_lenta(f"⚠️ Ammutinamento: {p}% | Cause: {', '.join(cause)}", "red")
 
     return p, cause
@@ -122,22 +126,22 @@ def evento_uomo_in_mare(stato):  # A
 
 
 def evento_verdura_in_mare(stato):  # B
-    stato["merci"]["verdura"] = perdita_frazione(stato["merci"]["verdura"])
+    stato["scorte"]["verdura"] = perdita_frazione(stato["scorte"].get("verdura", 0))
     nuovo_mondo.stampa_lenta("🌊 Un'onda strappa verdura dalla nave", "yellow")
 
 
 def evento_frutta_in_mare(stato):  # C
-    stato["merci"]["frutta"] = perdita_frazione(stato["merci"]["frutta"])
+    stato["scorte"]["frutta"] = perdita_frazione(stato["scorte"].get("frutta", 0))
     nuovo_mondo.stampa_lenta("🌊 Un'onda strappa frutta dalla nave", "yellow")
 
 
 def evento_carne_in_mare(stato):  # D
-    stato["merci"]["carne"] = perdita_frazione(stato["merci"]["carne"])
+    stato["scorte"]["carne"] = perdita_frazione(stato["scorte"].get("carne", 0))
     nuovo_mondo.stampa_lenta("🌊 Un'onda strappa carne dalla nave", "yellow")
 
 
 def evento_acqua_in_mare(stato):  # E
-    stato["merci"]["acqua"] = perdita_frazione(stato["merci"]["acqua"])
+    stato["scorte"]["acqua"] = perdita_frazione(stato["scorte"].get("acqua", 0))
     nuovo_mondo.stampa_lenta("🌊 Un'onda strappa acqua dalla nave", "yellow")
 
 
@@ -166,24 +170,24 @@ def evento_venti_favorevoli(stato):  # H
 
 
 def evento_cattivo_tempo(stato):  # I
-    stato["merci"]["bottiglie_medicinale"] = perdita_frazione(stato["merci"]["bottiglie_medicinale"])
+    stato["merci"]["bottiglie_medicinale"] = perdita_frazione(stato["merci"].get("bottiglie_medicinale", 0))
     nuovo_mondo.stampa_lenta("⛈️  Cattivo tempo: bottiglie di medicinale danneggiate", "yellow")
 
 
 def evento_ondata(stato):  # J
-    stato["merci"]["armi"] = perdita_frazione(stato["merci"]["armi"])
+    stato["merci"]["armi"] = perdita_frazione(stato["merci"].get("armi", 0))
     nuovo_mondo.stampa_lenta("🌊 Ondata gigantesca: armi danneggiate dall'acqua", "yellow")
 
 
 def evento_infestazione_ratti(stato):  # K
-    stato["merci"]["stoffa"] = perdita_frazione(stato["merci"]["stoffa"])
+    stato["merci"]["stoffa"] = perdita_frazione(stato["merci"].get("stoffa", 0))
     nuovo_mondo.stampa_lenta("🐭 Infestazione di ratti: stoffa danneggiata", "yellow")
 
 
 def evento_albatro(stato):  # ALBATRO
-    if stato["merci"]["armi"] <= 0:
+    if stato["merci"].get("armi", 0) <= 0:
         nuovo_mondo.stampa_lenta("🐦 Un albatro maestoso vola vicino... ma senza armi, non puoi fare nulla.", "cyan")
-        stato["avvistamenti_albatro"] += 1
+        stato["avvistamenti_albatro"] = stato.get("avvistamenti_albatro", 0) + 1
         return
 
     vivi = Stati_Ingaggio.conta_equipaggio(stato)
@@ -192,7 +196,7 @@ def evento_albatro(stato):  # ALBATRO
     nuovo_mondo.stampa_lenta(f"🐦 Un albatro gigantesco appare! Hai {max_tiri} tentativi disponibili.", "cyan")
 
     if not nuovo_mondo.chiedi_opzione("Vuoi sparare all'albatro?"):
-        stato["avvistamenti_albatro"] += 1
+        stato["avvistamenti_albatro"] = stato.get("avvistamenti_albatro", 0) + 1
         nuovo_mondo.stampa_lenta("🐦 L'albatro vola via indisturbato.", "cyan")
         return
 
@@ -215,11 +219,11 @@ def evento_albatro(stato):  # ALBATRO
         carne_aggiunta = random.randint(10, 15)
         stato["merci"]["carne"] = stato["merci"].get("carne", 0) + carne_aggiunta
         stato["albatro_ucciso"] = True
-        stato["avvistamenti_albatro"] += 1
+        stato["avvistamenti_albatro"] = stato.get("avvistamenti_albatro", 0) + 1
         nuovo_mondo.stampa_lenta(f"☠️  Albatro abbattuto! +{carne_aggiunta} kg di carne fresca", "red", attrs=["bold"])
         nuovo_mondo.stampa_lenta(f"⚠️  Hai usato {armi_usate} armi che non potranno essere barattate.", "yellow")
     else:
-        stato["avvistamenti_albatro"] += 1
+        stato["avvistamenti_albatro"] = stato.get("avvistamenti_albatro", 0) + 1
         nuovo_mondo.stampa_lenta("🐦 L'albatro scappa dopo il fuoco. Cattivo presagio...", "cyan")
 
 
@@ -232,7 +236,11 @@ def evento_scialuppa(stato):  # SCIALUPPA
 
     for i in range(4):
         ruolo = random.choice(list(Stati_Ingaggio.NOMI_RUOLO.keys()))
-        nome = Stati_Ingaggio.NOMI_RUOLO[ruolo]
+        nome_base = Stati_Ingaggio.NOMI_RUOLO[ruolo]
+        # Genera nome univoco con suffisso numerico
+        n_esistenti = len([k for k in stato["morale_individuale"] if k.startswith(nome_base)])
+        nome = f"{nome_base}_{n_esistenti + 1}"
+        
         stato["equipaggio"][ruolo] = stato["equipaggio"].get(ruolo, 0) + 1
         morale_casuale = random.randint(25, 75)
         stato["morale_individuale"][nome] = morale_casuale
@@ -301,14 +309,21 @@ def evento_pirati(stato):  # PIRATI
     nuovo_mondo.stampa_lenta(f"⚔️  ATTACCO PIRATA! {pirati} pirati vs {difensori} difensori | {uomini_persi} perdite", "red", attrs=["bold"])
 
     for i in range(min(uomini_persi, equipaggio_vivo)):
-        vittima = Stati_Ingaggio.rimuovi_membro(stato, None)
-        nuovo_mondo.stampa_lenta(f"  💀 {vittima or '1 membro'} caduto in battaglia", "red")
+        ruoli_vivi = [r for r in stato['equipaggio'] if stato['equipaggio'][r] > 0]
+        if ruoli_vivi:
+            ruolo = random.choice(ruoli_vivi)
+            vittima = Stati_Ingaggio.rimuovi_membro(stato, ruolo)
+            nuovo_mondo.stampa_lenta(f"  💀 {vittima or '1 membro'} caduto in battaglia", "red")
+        else:
+            break
 
     varia_morale_tutti(stato, -15, "morte in battaglia")
     aggiungi_punti_ammutinamento(stato, 15, "vittime in battaglia pirata")
 
 
 def evento_timone(stato):  # TIMONE
+    stato.setdefault('settimane_extra', 0)
+    
     if stato["equipaggio"].get("meccanici", 0) > 0:
         stato["settimane_extra"] = stato.get("settimane_extra", 0) + 1
         nuovo_mondo.stampa_lenta("🔧 Un meccanico ripara il timone rapidamente (+1 settimana)", "green")
@@ -319,6 +334,8 @@ def evento_timone(stato):  # TIMONE
 
 
 def evento_vento(stato):  # VENTO
+    stato.setdefault('settimane_extra', 0)
+    
     if stato["equipaggio"].get("navigatori", 0) > 0:
         stato["settimane_extra"] = stato.get("settimane_extra", 0) + 1
         nuovo_mondo.stampa_lenta("🧭 Un navigatore esperto gestisce le raffiche (+1 settimana)", "green")
@@ -339,17 +356,18 @@ def evento_isola(stato):  # ISOLA
     stato["settimane_extra"] = stato.get("settimane_extra", 0) + extra
     nuovo_mondo.stampa_lenta(f"🏝️  Approdo all'isola (+{extra} settimane)", "yellow")
 
-    if random.random() > 0.5:
+    evento_tipo = random.random()
+    
+    if evento_tipo > 0.5:
         nuovo_mondo.stampa_lenta("🏝️  L'isola è disabitata. Non c'è nulla di interessante.", "cyan")
         return
-
-    if random.random() < 0.5:
+    elif evento_tipo > 0.25:
         nuovo_mondo.stampa_lenta("👹 Gli abitanti sono ostili! Fuggi rapidamente dalla spiaggia!", "red", attrs=["bold"])
         return
 
     nuovo_mondo.stampa_lenta("🏝️  Gli abitanti sono pacifici e accoglienti!", "green", attrs=["bold"])
 
-    if stato["avvistamenti_albatro"] > 0 and not stato.get("albatro_ucciso"):
+    if stato.get("avvistamenti_albatro", 0) > 0 and not stato.get("albatro_ucciso"):
         bonus = random.randint(20, 40)
         ragione = "(fortunati! Albatro vivo visto)"
     else:
@@ -432,9 +450,13 @@ def gestisci_evento_casuale(stato):
 def step2_controllo_scorte(stato, settimane_rimanenti):
     nuovo_mondo.stampa_lenta("\n📊 CONTROLLO SETTIMANALE DELLE SCORTE", "blue", attrs=["bold"])
 
-    for categoria in stato["scorte"]:
-        consumo_settimanale = stato["consumi_settimanali"][categoria] * stato["razioni_moltiplicatore"].get(categoria, 1)
-        scorte_attuali = stato["scorte"][categoria]
+    for categoria in ["verdura", "frutta", "carne", "acqua"]:
+        consumo_per_membro = Stati_Ingaggio.CONSUMI_SETTIMANALI_PER_MEMBRO.get(categoria, 0)
+        moltiplicatore_razione = stato["razioni_moltiplicatore"].get(categoria, 1.0)
+        n_equipaggio = Stati_Ingaggio.conta_equipaggio(stato)
+        
+        consumo_settimanale = consumo_per_membro * moltiplicatore_razione * n_equipaggio
+        scorte_attuali = stato["scorte"].get(categoria, 0)
 
         nuovo_mondo.stampa_lenta(f"\n  {categoria.upper()}: {scorte_attuali:.1f} unità", "cyan")
         nuovo_mondo.stampa_lenta(f"    Consumo settimanale: {consumo_settimanale:.1f}", "white")
@@ -468,8 +490,10 @@ def controlla_morale_basso(stato):
     if vivi == 0:
         return
 
+    stato.setdefault('settimane_extra', 0)
+    
     basso_morale = sum(1 for v in stato["morale_individuale"].values() if v <= 30)
 
-    if basso_morale > vivi / 2:
+    if basso_morale * 2 > vivi:
         stato["settimane_extra"] = stato.get("settimane_extra", 0) + 1
         nuovo_mondo.stampa_lenta(f"😔 Morale basso diffuso: il viaggio si allunga di 1 settimana", "yellow")

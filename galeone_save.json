@@ -1,7 +1,7 @@
 {
     "stats": {
-        "morti": 3,
-        "vittorie_epiche": 1,
+        "morti": 8,
+        "vittorie_epiche": 2,
         "vittorie_pirro": 0,
         "rovine": 0
     },
@@ -320,6 +320,521 @@
                 "settimane_risparmiate": 0,
                 "settimane_extra": 0,
                 "settimane_percorse": 3,
+                "morti_recenti": 0,
+                "eventi_negativi": 0,
+                "naufraghi_tot": 0,
+                "esito": "Morto in mare"
+            }
+        },
+        "prova del 20_05": {
+            "capitano": "Giusy",
+            "stato": {
+                "fase": "nuovo_mondo",
+                "budget": 70.0,
+                "spese_iniziali": 1930.0,
+                "scorte": {
+                    "verdura": 60.0,
+                    "frutta": 0,
+                    "carne": 120.0,
+                    "acqua": 60.0
+                },
+                "razioni_moltiplicatore": {
+                    "verdura": 1.0,
+                    "frutta": 1.0,
+                    "carne": 1.0,
+                    "acqua": 1.0
+                },
+                "merci": {
+                    "bottiglie_medicinale": 17,
+                    "armi": 5,
+                    "sale": 2,
+                    "stoffa": 1,
+                    "coltelli": 1,
+                    "diamanti": 0,
+                    "carne": 40
+                },
+                "risorse_baratto": {
+                    "perle": 0.0,
+                    "manufatti": 0.0,
+                    "spezie": 0.0
+                },
+                "barattato": {
+                    "sale": 0,
+                    "stoffa": 0,
+                    "coltelli": 0,
+                    "diamanti": 0
+                },
+                "morale_individuale": {
+                    "Cuoco_1": 90,
+                    "Marinaio_1": 90,
+                    "Meccanico_1": 90,
+                    "Medico_1": 90,
+                    "Navigatore_1": 90,
+                    "Cuoco_2": 90,
+                    "Marinaio_2": 90,
+                    "Meccanico_2": 90,
+                    "Medico_2": 90,
+                    "Navigatore_2": 90,
+                    "Cuoco_3": 90,
+                    "Marinaio_3": 90,
+                    "Meccanico_3": 90,
+                    "Navigatore_3": 90,
+                    "Marinaio_4": 90
+                },
+                "punti_ammutinamento": 15,
+                "integrita": 100,
+                "equipaggio": {
+                    "marinai": 4,
+                    "cuochi": 3,
+                    "meccanici": 3,
+                    "medici": 2,
+                    "navigatori": 3
+                },
+                "debito_equipaggio": 240,
+                "costo_sett_ruolo": {
+                    "cuochi": 45,
+                    "marinai": 40,
+                    "meccanici": 45,
+                    "medici": 50,
+                    "navigatori": 60
+                },
+                "albatro_ucciso": true,
+                "albatro_benevolo": false,
+                "avvistamenti_albatro": 2,
+                "eventi_accaduti": [
+                    "frutta_in_mare"
+                ],
+                "settimane_risparmiate": 0,
+                "settimane_extra": 0,
+                "settimane_percorse": 8,
+                "morti_recenti": 0,
+                "eventi_negativi": 0,
+                "naufraghi_tot": 0,
+                "esito": "Morto in mare",
+                "relazione_indigeni": 35,
+                "doni_offerti": [],
+                "cerimonia_completata": false
+            }
+        },
+        "prova2 20_05": {
+            "capitano": "Leo",
+            "stato": {
+                "fase": "nuovo_mondo",
+                "budget": 1.0,
+                "spese_iniziali": 1999.0,
+                "scorte": {
+                    "verdura": 31.5,
+                    "frutta": 63.0,
+                    "carne": 63.0,
+                    "acqua": 31.5
+                },
+                "razioni_moltiplicatore": {
+                    "verdura": 1.0,
+                    "frutta": 1.0,
+                    "carne": 1.0,
+                    "acqua": 1.0
+                },
+                "merci": {
+                    "bottiglie_medicinale": 23,
+                    "armi": 1,
+                    "sale": 4,
+                    "stoffa": 0,
+                    "coltelli": 1,
+                    "diamanti": 0,
+                    "carne": 20
+                },
+                "risorse_baratto": {
+                    "perle": 0.0,
+                    "manufatti": 0.0,
+                    "spezie": 0.0
+                },
+                "barattato": {
+                    "sale": 0,
+                    "stoffa": 0,
+                    "coltelli": 0,
+                    "diamanti": 0
+                },
+                "morale_individuale": {
+                    "Cuoco_1": 100,
+                    "Marinaio_1": 100,
+                    "Meccanico_1": 100,
+                    "Medico_1": 100,
+                    "Navigatore_1": 100,
+                    "Marinaio_2": 100,
+                    "Marinaio_3": 100,
+                    "Meccanico_2": 100,
+                    "Medico_2": 100
+                },
+                "punti_ammutinamento": 0,
+                "integrita": 100,
+                "equipaggio": {
+                    "marinai": 3,
+                    "cuochi": 1,
+                    "meccanici": 2,
+                    "medici": 2,
+                    "navigatori": 1
+                },
+                "debito_equipaggio": 145,
+                "costo_sett_ruolo": {
+                    "cuochi": 15,
+                    "marinai": 30,
+                    "meccanici": 30,
+                    "medici": 50,
+                    "navigatori": 20
+                },
+                "albatro_ucciso": false,
+                "albatro_benevolo": false,
+                "avvistamenti_albatro": 0,
+                "eventi_accaduti": [
+                    "epidemia",
+                    "isola",
+                    "pirati"
+                ],
+                "settimane_risparmiate": 0,
+                "settimane_extra": 1,
+                "settimane_percorse": 9,
+                "morti_recenti": 0,
+                "eventi_negativi": 0,
+                "naufraghi_tot": 0,
+                "esito": "Morto in mare",
+                "relazione_indigeni": 55,
+                "doni_offerti": [],
+                "cerimonia_completata": false
+            }
+        },
+        "prova3 del 20_05": {
+            "capitano": "Senza Nome",
+            "stato": {
+                "fase": "ritorno",
+                "budget": 287.0,
+                "spese_iniziali": 1713.0,
+                "scorte": {
+                    "verdura": 0,
+                    "frutta": 56.0,
+                    "carne": 0,
+                    "acqua": 28.0
+                },
+                "razioni_moltiplicatore": {
+                    "verdura": 1.0,
+                    "frutta": 1.0,
+                    "carne": 1.0,
+                    "acqua": 1.0
+                },
+                "merci": {
+                    "bottiglie_medicinale": 5,
+                    "armi": 2,
+                    "sale": 1,
+                    "stoffa": 0,
+                    "coltelli": 2,
+                    "diamanti": 2,
+                    "acqua": 14
+                },
+                "risorse_baratto": {
+                    "perle": 145.5,
+                    "manufatti": 0.0,
+                    "spezie": 9.0
+                },
+                "barattato": {
+                    "sale": 3,
+                    "stoffa": 2,
+                    "coltelli": 2,
+                    "diamanti": 1
+                },
+                "morale_individuale": {
+                    "Cuoco_1": 70,
+                    "Marinaio_1": 70,
+                    "Meccanico_1": 70,
+                    "Medico_1": 70,
+                    "Navigatore_1": 70,
+                    "Marinaio_2": 70,
+                    "Meccanico_2": 70,
+                    "Medico_2": 70
+                },
+                "punti_ammutinamento": 90,
+                "integrita": 100,
+                "equipaggio": {
+                    "marinai": 2,
+                    "cuochi": 1,
+                    "meccanici": 2,
+                    "medici": 2,
+                    "navigatori": 1
+                },
+                "debito_equipaggio": 135,
+                "costo_sett_ruolo": {
+                    "cuochi": 15,
+                    "marinai": 20,
+                    "meccanici": 30,
+                    "medici": 50,
+                    "navigatori": 20
+                },
+                "albatro_ucciso": false,
+                "albatro_benevolo": false,
+                "avvistamenti_albatro": 0,
+                "eventi_accaduti": [
+                    "carne_in_mare",
+                    "verdura_in_mare"
+                ],
+                "settimane_risparmiate": 2,
+                "settimane_extra": 0,
+                "settimane_percorse": 12,
+                "morti_recenti": 0,
+                "eventi_negativi": 0,
+                "naufraghi_tot": 0,
+                "esito": "Vittoria Epica",
+                "relazione_indigeni": 85,
+                "doni_offerti": [
+                    "stoffa"
+                ],
+                "cerimonia_completata": true
+            }
+        },
+        "prova4 del 20_05": {
+            "capitano": "Senza Nome",
+            "stato": {
+                "fase": "ritorno",
+                "budget": 328.0,
+                "spese_iniziali": 1672.0,
+                "scorte": {
+                    "verdura": 33.0,
+                    "frutta": 66.0,
+                    "carne": 0,
+                    "acqua": 0
+                },
+                "razioni_moltiplicatore": {
+                    "verdura": 1.0,
+                    "frutta": 1.0,
+                    "carne": 1.0,
+                    "acqua": 1.0
+                },
+                "merci": {
+                    "bottiglie_medicinale": 3,
+                    "armi": 0,
+                    "sale": 0,
+                    "stoffa": 0,
+                    "coltelli": 1,
+                    "diamanti": 1
+                },
+                "risorse_baratto": {
+                    "perle": 56.0,
+                    "manufatti": 0.0,
+                    "spezie": 4.0
+                },
+                "barattato": {
+                    "sale": 2,
+                    "stoffa": 2,
+                    "coltelli": 2,
+                    "diamanti": 2
+                },
+                "morale_individuale": {
+                    "Marinaio_1": 32,
+                    "Medico_1": 32,
+                    "Cuoco_2": 32,
+                    "Marinaio_2": 32,
+                    "Meccanico_2": 32,
+                    "Medico_2": 32,
+                    "Marinaio_3": 32,
+                    "Meccanico_3": 32
+                },
+                "punti_ammutinamento": 100,
+                "integrita": 100,
+                "equipaggio": {
+                    "marinai": 3,
+                    "cuochi": 1,
+                    "meccanici": 2,
+                    "medici": 2,
+                    "navigatori": 0
+                },
+                "debito_equipaggio": 195,
+                "costo_sett_ruolo": {
+                    "cuochi": 15,
+                    "marinai": 30,
+                    "meccanici": 30,
+                    "medici": 50,
+                    "navigatori": 0
+                },
+                "albatro_ucciso": false,
+                "albatro_benevolo": false,
+                "avvistamenti_albatro": 1,
+                "eventi_accaduti": [
+                    "timone",
+                    "pirati",
+                    "uomo_in_mare",
+                    "carne_in_mare",
+                    "acqua_in_mare"
+                ],
+                "settimane_risparmiate": 2,
+                "settimane_extra": 1,
+                "settimane_percorse": 16,
+                "morti_recenti": 0,
+                "eventi_negativi": 0,
+                "naufraghi_tot": 0,
+                "esito": "Morto in mare",
+                "relazione_indigeni": 55,
+                "doni_offerti": [
+                    "stoffa"
+                ],
+                "cerimonia_completata": false
+            }
+        },
+        "Cronaca_di_Senza Nome_2837": {
+            "capitano": "Senza Nome",
+            "stato": {
+                "fase": "ritorno",
+                "budget": 302.0,
+                "spese_iniziali": 1698.0,
+                "scorte": {
+                    "verdura": 29.5,
+                    "frutta": 0,
+                    "carne": 59.0,
+                    "acqua": 0
+                },
+                "razioni_moltiplicatore": {
+                    "verdura": 1.0,
+                    "frutta": 1.0,
+                    "carne": 1.0,
+                    "acqua": 1.0
+                },
+                "merci": {
+                    "bottiglie_medicinale": 1,
+                    "armi": 0,
+                    "sale": 1,
+                    "stoffa": 1,
+                    "coltelli": 1,
+                    "diamanti": 1,
+                    "acqua": 20
+                },
+                "risorse_baratto": {
+                    "perle": 114.0,
+                    "manufatti": 4.5,
+                    "spezie": 0.0
+                },
+                "barattato": {
+                    "sale": 2,
+                    "stoffa": 2,
+                    "coltelli": 1,
+                    "diamanti": 3
+                },
+                "morale_individuale": {
+                    "Cuoco_1": 35,
+                    "Marinaio_1": 35,
+                    "Medico_1": 35,
+                    "Navigatore_1": 35,
+                    "Marinaio_2": 35,
+                    "Meccanico_2": 35,
+                    "Cuoco_2": 35
+                },
+                "punti_ammutinamento": 115,
+                "integrita": 100,
+                "equipaggio": {
+                    "marinai": 2,
+                    "cuochi": 2,
+                    "meccanici": 1,
+                    "medici": 1,
+                    "navigatori": 1
+                },
+                "debito_equipaggio": 125,
+                "costo_sett_ruolo": {
+                    "cuochi": 30,
+                    "marinai": 20,
+                    "meccanici": 15,
+                    "medici": 25,
+                    "navigatori": 20
+                },
+                "albatro_ucciso": false,
+                "albatro_benevolo": false,
+                "avvistamenti_albatro": 0,
+                "eventi_accaduti": [
+                    "acqua_in_mare",
+                    "frutta_in_mare",
+                    "ondata",
+                    "uomo_in_mare",
+                    "cattivo_tempo"
+                ],
+                "settimane_risparmiate": 0,
+                "settimane_extra": 0,
+                "settimane_percorse": 12,
+                "morti_recenti": 0,
+                "eventi_negativi": 0,
+                "naufraghi_tot": 0,
+                "esito": "Morto in mare",
+                "relazione_indigeni": 100,
+                "doni_offerti": [
+                    "coltelli"
+                ],
+                "cerimonia_completata": true
+            }
+        },
+        "Cronaca_di_Ryj_9254": {
+            "capitano": "Ryj",
+            "stato": {
+                "fase": "andata",
+                "budget": 1241.0,
+                "spese_iniziali": 759.0,
+                "scorte": {
+                    "verdura": 374.0,
+                    "frutta": 0,
+                    "carne": 36.0,
+                    "acqua": 52.0
+                },
+                "razioni_moltiplicatore": {
+                    "verdura": 1.0,
+                    "frutta": 1.0,
+                    "carne": 1.0,
+                    "acqua": 1.0
+                },
+                "merci": {
+                    "bottiglie_medicinale": 1,
+                    "armi": 18,
+                    "sale": 19,
+                    "stoffa": 11,
+                    "coltelli": 11,
+                    "diamanti": 17
+                },
+                "risorse_baratto": {
+                    "perle": 0.0,
+                    "manufatti": 0.0,
+                    "spezie": 0.0
+                },
+                "barattato": {
+                    "sale": 0,
+                    "stoffa": 0,
+                    "coltelli": 0,
+                    "diamanti": 0
+                },
+                "morale_individuale": {
+                    "Cuoco_1": 30,
+                    "Marinaio_1": 30,
+                    "Meccanico_1": 30,
+                    "Medico_1": 30,
+                    "Navigatore_1": 30,
+                    "Meccanico_2": 13
+                },
+                "punti_ammutinamento": 105,
+                "integrita": 100,
+                "equipaggio": {
+                    "marinai": 1,
+                    "cuochi": 1,
+                    "meccanici": 2,
+                    "medici": 1,
+                    "navigatori": 1
+                },
+                "debito_equipaggio": 85,
+                "costo_sett_ruolo": {
+                    "cuochi": 15,
+                    "marinai": 10,
+                    "meccanici": 15,
+                    "medici": 25,
+                    "navigatori": 20
+                },
+                "albatro_ucciso": false,
+                "albatro_benevolo": false,
+                "avvistamenti_albatro": 0,
+                "eventi_accaduti": [
+                    "scialuppa"
+                ],
+                "settimane_risparmiate": 0,
+                "settimane_extra": 0,
+                "settimane_percorse": 7,
                 "morti_recenti": 0,
                 "eventi_negativi": 0,
                 "naufraghi_tot": 0,

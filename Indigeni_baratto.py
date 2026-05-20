@@ -87,7 +87,7 @@ def fase_primo_contatto(stato, capitano):
     nuovo_mondo.stampa_lenta("Il capo tribù avanza di tre passi. Silenzio totale.", "cyan", attrs=["bold"])
 
     scelta = nuovo_mondo.chiedi_scelta(
-        colored("\n👉 [F] FAI FUOCO subito | [A] Avanza disarmato | [A] Aspetta e osserva: ", "magenta", attrs=["bold"]),
+        colored("\n👉 [F] FAI FUOCO subito | [A] Avanza disarmato | [O] Aspetta e osserva: ", "magenta", attrs=["bold"]),
         ['F', 'A', 'O']
     )
 
